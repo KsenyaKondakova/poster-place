@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 
 function Home() {
   const [data, setData] = useState([]);
   const { data: session } = useSession();
+=======
+
+function Home() {
+  const [data, setData] = useState([]);
+
+>>>>>>> 88c71cce9b1e5016596de45a706314d819dadda9
   useEffect(() => {
     async function fetchData() {
       try {
@@ -18,6 +25,7 @@ function Home() {
 
     fetchData();
   }, []);
+<<<<<<< HEAD
   if (session) {
     return (
       <>
@@ -36,5 +44,9 @@ function Home() {
       </button>
     </div>
   );
+=======
+
+  return <div>{console.log(data)}</div>;
+>>>>>>> 88c71cce9b1e5016596de45a706314d819dadda9
 }
 export default Home;
