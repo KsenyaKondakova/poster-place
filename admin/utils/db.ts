@@ -1,6 +1,6 @@
 const { MongoClient } = require('mongodb');
 async function connectToDatabase() {
-  const url = `mongodb://${process.env.USERNAME_MONGODB}:${process.env.PASSWORD_MONGODB}@${process.env.IP_MONGODB}/${process.env.DATABASE_MONGODB}`;
+  const url: string = `mongodb://${process.env.USERNAME_MONGODB}:${process.env.PASSWORD_MONGODB}@${process.env.IP_MONGODB}/${process.env.DATABASE_MONGODB}`;
   const client = new MongoClient(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -15,5 +15,4 @@ async function connectToDatabase() {
     throw err;
   }
 }
-
 module.exports = connectToDatabase;
