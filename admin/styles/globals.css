@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-v-1 {
+}
+.form-input {
+  @apply block w-full border-none rounded-md p-2 w-full text-gray-600;
+}
+.form-input:focus {
+  @apply focus:outline-none focus:ring-1 focus:ring-nav-gray;
+}
+.submit-btn {
+  @apply w-fit bg-nav-gray p-2 px-4 text-orange-50 rounded-2xl hover:shadow-lg transition duration-300 ease-in-out  hover:shadow-nav-gray;
+}
