@@ -13,6 +13,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "20.8.10",
     "@types/react-dom": "18.2.14",
+    "axios": "^1.6.0",
     "eslint": "8.52.0",
     "eslint-config-next": "14.0.1",
     "mongodb": "^6.2.0",
