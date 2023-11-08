@@ -5,22 +5,7 @@ import Nav from '@/components/Nav';
 import Layout from '@/components/Layout';
 
 function Home() {
-  const [data, setData] = useState<any[]>([]);
   const { data: session } = useSession();
-  console.log(session);
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/mongodb');
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-  }, []);
 
   return (
     <Layout>
