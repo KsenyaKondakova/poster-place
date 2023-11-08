@@ -11,9 +11,9 @@ function Layout({ children }: LayoutProps) {
       <div className="flex bg-neutral-800 min-h-screen">
         <Nav />
         <div className="bg-yellow-100 flex-grow mt-2 mr-2 mb-2 rounded-xl p-4">
-          Signed in as {session.user?.email} <br />
+          {/* Signed in as {session.user?.email} <br />
           <button onClick={() => signOut()}>Sign out</button>
-          <br />
+          <br /> */}
           {children}
         </div>
       </div>
