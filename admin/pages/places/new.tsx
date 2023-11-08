@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { json } from 'stream/consumers';
 import axios from 'axios';
+import { NextRouter, useRouter } from 'next/router';
 interface NewPlaceForm {
   placeName: string;
   descriptionPlace: string;
 }
 
 function NewPlace() {
+  const router: NextRouter = useRouter();
+  const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -17,7 +20,11 @@ function NewPlace() {
   } = useForm<NewPlaceForm>();
   const onSubmit = async (data: NewPlaceForm) => {
     await axios.post('/api/places', data);
+    setGoToPlaces(true);
   };
+  if (goToPlaces) {
+    router.push('/places');
+  }
   return (
     <Layout>
       <h1 className="text-2xl mb-4">Новое зведение</h1>
