@@ -4,6 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: IPlaceState = {
   placeList: [],
+  placeInfo: { _id: null, title: '', description: '' },
 };
 
 export const placeSlice = createSlice({
@@ -13,10 +14,13 @@ export const placeSlice = createSlice({
     setPlaces: (state, action: PayloadAction<IPlaceList[]>) => {
       state.placeList = action.payload;
     },
+    setPlaceInfo: (state, action: PayloadAction<IPlaceList>) => {
+      state.placeInfo = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setPlaces } = placeSlice.actions;
+export const { setPlaces, setPlaceInfo } = placeSlice.actions;
 
 export default placeSlice.reducer;
