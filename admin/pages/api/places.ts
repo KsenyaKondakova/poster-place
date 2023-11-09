@@ -12,4 +12,11 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const placeDoc = await Place.create({ title: placeName, description: descriptionPlace });
     res.json(placeDoc);
   }
+  if (method === 'GET') {
+    if (req.query?.id) {
+      res.json(await Place.findOne({ _id: req.query.id }));
+    } else {
+      res.json(await Place.find());
+    }
+  }
 }
