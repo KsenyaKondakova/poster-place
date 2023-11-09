@@ -13,3 +13,15 @@
 .submit-btn {
   @apply w-fit bg-nav-gray p-2 px-4 text-orange-50 rounded-2xl hover:shadow-lg transition duration-300 ease-in-out  hover:shadow-nav-gray;
 }
+table.basic thead tr td {
+  @apply bg-nav-gray text-orange-50;
+}
+table.basic tr td {
+  @apply border p-3 border-gray-800;
+}
+table.basic {
+  @apply w-full;
+}
+table.basic a {
+  @apply flex items-center justify-center text-sm w-fit bg-[#f5a54a] p-2 px-2 text-nav-gray rounded-lg hover:shadow-lg transition duration-300 ease-in-out  hover:shadow-nav-gray;
+}
