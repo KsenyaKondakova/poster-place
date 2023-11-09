@@ -13,6 +13,10 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     res.json(placeDoc);
   }
   if (method === 'GET') {
-    res.json(await Place.find());
+    if (req.query?.id) {
+      res.json(await Place.findOne({ _id: req.query.id }));
+    } else {
+      res.json(await Place.find());
+    }
   }
 }
