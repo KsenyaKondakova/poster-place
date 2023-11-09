@@ -12,4 +12,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const placeDoc = await Place.create({ title: placeName, description: descriptionPlace });
     res.json(placeDoc);
   }
+  if (method === 'GET') {
+    res.json(await Place.find());
+  }
 }
