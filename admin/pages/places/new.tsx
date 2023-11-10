@@ -4,7 +4,8 @@ import PlaceForm from '@/components/PlaceForm';
 function NewPlace() {
   return (
     <Layout>
-      <PlaceForm />
+      <h1 className="text-2xl mb-4">Новое зведение</h1>
+      <PlaceForm {...({} as any)} />
     </Layout>
   );
 }

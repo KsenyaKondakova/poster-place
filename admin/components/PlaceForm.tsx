@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
-import { NewPlaceForm } from '@/types/placesType';
-function PlaceForm() {
+import { IPlaceList, NewPlaceForm } from '@/types/placesType';
+function PlaceForm({ _id, title: existingTitle, description: existingDescription }: IPlaceList) {
   const router: NextRouter = useRouter();
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
   const {
@@ -12,19 +12,27 @@ function PlaceForm() {
     watch,
     formState: { errors },
   } = useForm<NewPlaceForm>();
+
   const onSubmit = async (data: NewPlaceForm) => {
-    await axios.post('/api/places', data);
-    setGoToPlaces(true);
+    try {
+      await axios.post('/api/places', data);
+      setGoToPlaces(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
   if (goToPlaces) {
     router.push('/places');
   }
   return (
     <>
-      <h1 className="text-2xl mb-4">Новое зведение</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl flex flex-col gap-y-2">
         <label className="label-form">Название заведения</label>
-        <input className="form-input" {...register('placeName', { required: true })} />
+        <input
+          className="form-input"
+          {...register('placeName', { required: true })}
+          defaultValue={existingTitle || ''}
+        />
         {errors?.placeName?.type === 'required' && (
           <div className="flex gap-1 text-[#bf1650]">
             <svg
@@ -50,6 +58,7 @@ function PlaceForm() {
           {...register('descriptionPlace', { required: true })}
           cols={10}
           rows={8}
+          defaultValue={existingDescription || ''}
         />
         {errors?.descriptionPlace?.type === 'required' && (
           <div className="flex gap-1 text-[#bf1650]">
