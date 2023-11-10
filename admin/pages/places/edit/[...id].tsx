@@ -13,17 +13,15 @@ function EditPlacePage() {
   const placeInfo = useSelector((state: RootState) => state.placeSlice.placeInfo);
   const id: string | string[] | undefined = router.query.id;
   const [showForm, setShowForm] = useState<boolean>(false);
-
   useEffect(() => {
     if (!id) {
       return;
     }
-
     axios.get('/api/places?id=' + id).then((response) => {
       dispatch(setPlaceInfo(response.data));
       setShowForm(true);
     });
-  }, []);
+  }, [id]);
 
   return (
     <Layout>
