@@ -14,12 +14,12 @@ function PlaceForm({ _id, title: existingTitle, description: existingDescription
   } = useForm<NewPlaceForm>();
 
   const onSubmit = async (data: NewPlaceForm) => {
-    try {
+    if (_id) {
+      await axios.put('/api/places', { ...data, _id });
+    } else {
       await axios.post('/api/places', data);
-      setGoToPlaces(true);
-    } catch (error) {
-      console.error('Error submitting form:', error);
     }
+    setGoToPlaces(true);
   };
   if (goToPlaces) {
     router.push('/places');
