@@ -43,6 +43,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         res.status(404).json({ error: 'Place not found' });
       }
     }
+    if (method === 'DELETE') {
+      if (req.query?.id) {
+        const deletePlace = await Place.deleteOne({ _id: req.query?.id });
+        if (deletePlace) {
+          res.json(true);
+        } else {
+          res.status(404).json({ error: 'Not delete' });
+        }
+      }
+    }
   } catch (error) {
     console.error('Server error:', error);
     res.status(500).json({ error: 'Internal Server Error' });
