@@ -16,7 +16,7 @@ function PlaceForm({
 }: IPlaceList) {
   const router: NextRouter = useRouter();
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
-  const [images, setImages] = useState<string[]>(existingImages || '');
+  const [images, setImages] = useState<string[]>(existingImages || []);
   const {
     register,
     handleSubmit,
@@ -75,7 +75,6 @@ function PlaceForm({
             <p>Это поле должно быть заполнено</p>
           </div>
         )}
-        
 
         <label>Фото</label>
         <div className="mb-4 flex flex-wrap gap-2">

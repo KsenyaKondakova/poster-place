@@ -2,7 +2,7 @@ export interface IPlaceList {
   _id: number | null;
   title: string;
   description: string;
-  images: string[];
+  images?: string[];
 }
 
 export interface IPlaceState {
