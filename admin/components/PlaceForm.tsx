@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
 import { IPlaceList, NewPlaceForm } from '@/types/placesType';
-function PlaceForm({ _id, title: existingTitle, description: existingDescription }: IPlaceList) {
+import { link } from 'fs';
+interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
+  target: HTMLInputElement & EventTarget;
+}
+
+function PlaceForm({
+  _id,
+  title: existingTitle,
+  description: existingDescription,
+  images: existingImages,
+}: IPlaceList) {
   const router: NextRouter = useRouter();
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
+  const [images, setImages] = useState<string[]>(existingImages || '');
   const {
     register,
     handleSubmit,
@@ -24,6 +35,19 @@ function PlaceForm({ _id, title: existingTitle, description: existingDescription
   if (goToPlaces) {
     router.push('/places');
   }
+  const uploadImages = async (ev: IUploadImagesEvent) => {
+    const files = ev.target?.files;
+    if (files && files?.length > 0) {
+      const data = new FormData();
+      for (const file of files) {
+        data.append('file', file);
+      }
+      const res = await axios.put('/api/upload', data);
+      setImages((oldImages) => {
+        return [...oldImages, ...res.data.links];
+      });
+    }
+  };
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl flex flex-col gap-y-2">
@@ -51,8 +75,31 @@ function PlaceForm({ _id, title: existingTitle, description: existingDescription
             <p>Это поле должно быть заполнено</p>
           </div>
         )}
-        <label className="label-form">Описание заведения</label>
+        
 
+        <label>Фото</label>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {!!images?.length &&
+            images.map((link) => (
+              <div key={link} className="h-28">
+                <img src={link} className="w-28" />
+              </div>
+            ))}
+          <label className="h-24 w-24 border-2 border-black rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span>Добавить фото</span>
+            <input type="file" className="hidden" onChange={uploadImages} />
+          </label>
+        </div>
+        <label className="label-form">Описание заведения</label>
         <textarea
           className="form-input"
           {...register('descriptionPlace', { required: true })}
