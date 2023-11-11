@@ -7,28 +7,41 @@ import { NextRouter, useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-function EditPlacePage() {
+function DeletePlacePage() {
   const router: NextRouter = useRouter();
   const dispatch = useDispatch();
   const placeInfo = useSelector((state: RootState) => state.placeSlice.placeInfo);
   const id: string | string[] | undefined = router.query.id;
-  const [showForm, setShowForm] = useState<boolean>(false);
+
   useEffect(() => {
     if (!id) {
       return;
     }
     axios.get('/api/places?id=' + id).then((response) => {
       dispatch(setPlaceInfo(response.data));
-      setShowForm(true);
     });
   }, [id]);
-
+  const goBack = () => {
+    router.push('/places');
+  };
+  const deletePlace = async () => {
+    await axios.delete(`/api/places?id=${id}`);
+    goBack();
+  };
   return (
     <Layout>
-      <h1 className="text-2xl mb-4">Редактировать зведение</h1>
-      {showForm && placeInfo && <PlaceForm {...placeInfo} />}
+      <h1 className="text-2xl mb-4 text-center">Вы действительно хотите удалить заведение?</h1>
+      <p className="text-xl mb-4 text-center">Название заведения:{placeInfo?.title}</p>
+      <div className="flex gap-8 justify-center">
+        <button className="button-red" onClick={deletePlace}>
+          Да
+        </button>
+        <button className="button-default" onClick={goBack}>
+          Нет
+        </button>
+      </div>
     </Layout>
   );
 }
 
-export default EditPlacePage;
+export default DeletePlacePage;

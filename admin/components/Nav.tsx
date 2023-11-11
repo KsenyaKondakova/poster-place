@@ -4,7 +4,7 @@ import React from 'react';
 
 function Nav() {
   const router: NextRouter = useRouter();
-  const pathname: string = router.pathname;
+  const pathname: string = router.pathname || '';
   const inactiveLink: string =
     'flex gap-2 text-xl font-extralight bg-nav-gray p-3 rounded-2xl hover:shadow-lg transition duration-300 ease-in-out  hover:shadow-amber-100';
   const activeLink: string = inactiveLink + ' bg-nav-yellow text-neutral-800';
