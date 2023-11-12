@@ -5,6 +5,7 @@ import { NextRouter, useRouter } from 'next/router';
 import { IPlaceList, NewPlaceForm } from '@/types/placesType';
 import { link } from 'fs';
 import Spinner from './Spinner';
+import { ReactSortable } from 'react-sortablejs';
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
@@ -17,7 +18,8 @@ function PlaceForm({
 }: IPlaceList) {
   const router: NextRouter = useRouter();
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
-  const [images, setImages] = useState<string[]>(existingImages || []);
+  const [images, setImages] = useState<string[]>(existingImages || ([] as string[]));
+
   const [isUplouding, setIsUploading] = useState<boolean>(false);
   const {
     register,
@@ -37,6 +39,7 @@ function PlaceForm({
   if (goToPlaces) {
     router.push('/places');
   }
+  console.log(images);
   const uploadImages = async (ev: IUploadImagesEvent) => {
     const files = ev.target?.files;
     if (files && files?.length > 0) {
@@ -51,6 +54,9 @@ function PlaceForm({
       });
       setIsUploading(false);
     }
+  };
+  const updateImagesOrder = (images: string[]) => {
+    setImages(images);
   };
   return (
     <>
@@ -111,14 +117,20 @@ function PlaceForm({
         <div className="image-form flex gap-y-2 flex-col bg-nav-gray p-6 rounded-3xl">
           <label className="label-form">Фото</label>
           <div className="mb-4 flex flex-wrap gap-2">
-            {!!images?.length &&
-              images.map((link) => (
-                <div
-                  key={link}
-                  className="h-28 w-28 overflow-hidden flex items-center justify-center">
-                  <img src={link} className="min-h-full min-w-full shrink-0" />
-                </div>
-              ))}
+            <ReactSortable
+              list={images.map((link, index) => ({ id: index.toString(), link }))}
+              setList={(newState) => updateImagesOrder(newState.map((item) => item.link))}
+              className="flex flex-wrap gap-2">
+              {!!images?.length &&
+                images.map((link) => (
+                  <div
+                    key={link}
+                    className="h-28 w-28 overflow-hidden flex items-center justify-center">
+                    <img src={link} className="min-h-full min-w-full shrink-0" />
+                  </div>
+                ))}
+            </ReactSortable>
+
             {isUplouding && (
               <div className="h-28 p-1 flex items-center">
                 <Spinner />
