@@ -4,6 +4,7 @@ import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
 import { IPlaceList, NewPlaceForm } from '@/types/placesType';
 import { link } from 'fs';
+import Spinner from './Spinner';
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
@@ -17,6 +18,7 @@ function PlaceForm({
   const router: NextRouter = useRouter();
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>(existingImages || []);
+  const [isUplouding, setIsUploading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -26,9 +28,9 @@ function PlaceForm({
 
   const onSubmit = async (data: NewPlaceForm) => {
     if (_id) {
-      await axios.put('/api/places', { ...data, _id });
+      await axios.put('/api/places', { ...data, images, _id });
     } else {
-      await axios.post('/api/places', data);
+      await axios.post('/api/places', { ...data, images });
     }
     setGoToPlaces(true);
   };
@@ -38,6 +40,7 @@ function PlaceForm({
   const uploadImages = async (ev: IUploadImagesEvent) => {
     const files = ev.target?.files;
     if (files && files?.length > 0) {
+      setIsUploading(true);
       const data = new FormData();
       for (const file of files) {
         data.append('file', file);
@@ -46,85 +49,97 @@ function PlaceForm({
       setImages((oldImages) => {
         return [...oldImages, ...res.data.links];
       });
+      setIsUploading(false);
     }
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl flex flex-col gap-y-2">
-        <label className="label-form">Название заведения</label>
-        <input
-          className="form-input"
-          {...register('placeName', { required: true })}
-          defaultValue={existingTitle || ''}
-        />
-        {errors?.placeName?.type === 'required' && (
-          <div className="flex gap-1 text-[#bf1650]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-              />
-            </svg>
-            <p>Это поле должно быть заполнено</p>
-          </div>
-        )}
+      <form onSubmit={handleSubmit(onSubmit)} className=" flex gap-x-4">
+        <div className="max-w-3xl flex flex-col gap-y-2 grow">
+          <label className="label-form">Название заведения</label>
+          <input
+            className="form-input"
+            {...register('placeName', { required: true })}
+            defaultValue={existingTitle || ''}
+          />
+          {errors?.placeName?.type === 'required' && (
+            <div className="flex gap-1 text-[#bf1650]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+              <p>Это поле должно быть заполнено</p>
+            </div>
+          )}
 
-        <label>Фото</label>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {!!images?.length &&
-            images.map((link) => (
-              <div key={link} className="h-28">
-                <img src={link} className="w-28" />
-              </div>
-            ))}
-          <label className="h-24 w-24 border-2 border-black rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            <span>Добавить фото</span>
-            <input type="file" className="hidden" onChange={uploadImages} />
-          </label>
+          <label className="label-form">Описание заведения</label>
+          <textarea
+            className="form-input"
+            {...register('descriptionPlace', { required: true })}
+            cols={10}
+            rows={8}
+            defaultValue={existingDescription || ''}
+          />
+          {errors?.descriptionPlace?.type === 'required' && (
+            <div className="flex gap-1 text-[#bf1650]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+              <p>Это поле должно быть заполнено</p>
+            </div>
+          )}
+          <input className="submit-btn" type="submit" value="Отправить" />
         </div>
-        <label className="label-form">Описание заведения</label>
-        <textarea
-          className="form-input"
-          {...register('descriptionPlace', { required: true })}
-          cols={10}
-          rows={8}
-          defaultValue={existingDescription || ''}
-        />
-        {errors?.descriptionPlace?.type === 'required' && (
-          <div className="flex gap-1 text-[#bf1650]">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-              />
-            </svg>
-            <p>Это поле должно быть заполнено</p>
+        <div className="grow">
+          <label>Фото</label>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {!!images?.length &&
+              images.map((link) => (
+                <div
+                  key={link}
+                  className="h-28 w-28 overflow-hidden flex items-center justify-center">
+                  <img src={link} className="min-h-full min-w-full shrink-0" />
+                </div>
+              ))}
+            {isUplouding && (
+              <div className="h-28 p-1 flex items-center">
+                <Spinner />
+              </div>
+            )}
+            <label className="h-28 w-28 border-2 border-black rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-8 h-8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              <span>Добавить фото</span>
+              <input type="file" className="hidden" onChange={uploadImages} />
+            </label>
           </div>
-        )}
-        <input className="submit-btn" type="submit" value="Отправить" />
+        </div>
       </form>
     </>
   );
