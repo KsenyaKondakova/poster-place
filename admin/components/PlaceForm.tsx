@@ -54,8 +54,8 @@ function PlaceForm({
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className=" flex gap-x-4">
-        <div className="max-w-3xl flex flex-col gap-y-2 grow">
+      <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+        <div className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-3xl">
           <label className="label-form">Название заведения</label>
           <input
             className="form-input"
@@ -107,10 +107,9 @@ function PlaceForm({
               <p>Это поле должно быть заполнено</p>
             </div>
           )}
-          <input className="submit-btn" type="submit" value="Отправить" />
         </div>
-        <div className="grow">
-          <label>Фото</label>
+        <div className="image-form flex gap-y-2 flex-col bg-nav-gray p-6 rounded-3xl">
+          <label className="label-form">Фото</label>
           <div className="mb-4 flex flex-wrap gap-2">
             {!!images?.length &&
               images.map((link) => (
@@ -125,7 +124,7 @@ function PlaceForm({
                 <Spinner />
               </div>
             )}
-            <label className="h-28 w-28 border-2 border-black rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+            <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -139,6 +138,10 @@ function PlaceForm({
               <input type="file" className="hidden" onChange={uploadImages} />
             </label>
           </div>
+        </div>
+
+        <div className="button-form flex justify-center items-center">
+          <input className="submit-btn" type="submit" value="Отправить" />
         </div>
       </form>
     </>
