@@ -12,4 +12,5 @@ export interface IPlaceState {
 export interface NewPlaceForm {
   placeName: string;
   descriptionPlace: string;
+  images: string[];
 }

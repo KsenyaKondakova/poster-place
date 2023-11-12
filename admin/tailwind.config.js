@@ -13,6 +13,9 @@ module.exports = {
       colors: {
         'nav-gray': '#38393E',
         'nav-yellow': '#FFF3C7',
+        'gray-border': '#494A4F',
+        'yellow-text': '#E3D79D',
+        'form-bg': '#54555A',
       },
     },
   },
