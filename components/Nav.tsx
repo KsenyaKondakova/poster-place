@@ -77,7 +77,9 @@ function Nav() {
 
           <span>Афиша</span>
         </Link>
-        <Link href={'/'} className={pathname === '/categories' ? activeLink : inactiveLink}>
+        <Link
+          href={'/categories'}
+          className={pathname === '/categories' ? activeLink : inactiveLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

@@ -1,10 +1,8 @@
-import clientPromise from '@/lib/mongodb';
 import { mongooseConnect } from '@/lib/mongoose';
 import { Place } from '@/models/Place';
-import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
