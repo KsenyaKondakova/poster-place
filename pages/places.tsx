@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+//test
 function Places() {
   const dispatch = useDispatch();
   const places = useSelector((state: RootState) => state.placeSlice.placeList);
