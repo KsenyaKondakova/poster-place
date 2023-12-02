@@ -1,0 +1,55 @@
+name: Deploy to Remote Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          npm install next-transpile-modules
+
+      - name: Build Application
+        run: |
+          npm run build
+
+      - name: Debug SSH Private Key
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}"
+
+      - name: Save Key to File
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+
+      - name: Display Key File Content
+        run: cat key.pem
+
+      - name: Add Remote Host to known_hosts
+        run: |
+          mkdir -p $HOME/.ssh
+          touch $HOME/.ssh/known_hosts
+          ssh-keyscan -H 89.208.222.129 >> $HOME/.ssh/known_hosts
+
+      - name: Change Permissions for Key File
+        run: chmod 600 key.pem
+
+      - name: Debug Remote Connection
+        run: |
+          scp -i key.pem key.pem ubuntu@89.208.222.129:/tmp/
+          ssh -i key.pem -o StrictHostKeyChecking=no ubuntu@89.208.222.129 "echo Debugging Remote Connection"
+
+      - name: Deploy to Remote Server
+        run: |
+          ssh -i key.pem ubuntu@89.208.222.129 "cd /var/www/nextjs/poster-place && sudo git pull origin main && sudo npm install && sudo npm run build "
