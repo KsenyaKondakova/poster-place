@@ -3,6 +3,9 @@ import YandexProvider from 'next-auth/providers/yandex';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '../../../lib/mongodb';
 
+console.log('YANDEX_CLIENT_ID:', process.env.YANDEX_CLIENT_ID);
+console.log('YANDEX_CLIENT_SECRET:', process.env.YANDEX_CLIENT_SECRET);
+
 export const authOptions = {
   providers: [
     YandexProvider({
