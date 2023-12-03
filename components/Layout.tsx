@@ -6,6 +6,7 @@ type LayoutProps = {
 };
 function Layout({ children }: LayoutProps) {
   const { data: session } = useSession();
+  console.log(process.env.USERNAME_MONGODB);
   if (session) {
     return (
       <div className="flex bg-neutral-800 min-h-screen">
