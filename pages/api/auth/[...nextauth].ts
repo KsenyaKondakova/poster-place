@@ -7,6 +7,7 @@ console.log('YANDEX_CLIENT_ID:', process.env.YANDEX_CLIENT_ID);
 console.log('YANDEX_CLIENT_SECRET:', process.env.YANDEX_CLIENT_SECRET);
 
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     YandexProvider({
       clientId: process.env.YANDEX_CLIENT_ID,
