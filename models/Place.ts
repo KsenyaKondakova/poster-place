@@ -12,4 +12,4 @@ const placeSchema = new Schema<IUser>({
   images: [{ type: String }],
 });
 
-export const Place = models.Place || model('Place', placeSchema);
+export const Place = models?.Place || model('Place', placeSchema);
