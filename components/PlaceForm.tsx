@@ -62,11 +62,14 @@ function PlaceForm({
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="form-container">
         <div className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-3xl">
-          <label className="label-form">Название заведения</label>
+          <label className="label-form" htmlFor="placename">
+            Название заведения
+          </label>
           <input
             className="form-input"
             {...register('placeName', { required: true })}
             defaultValue={existingTitle || ''}
+            id="placename"
           />
           {errors?.placeName?.type === 'required' && (
             <div className="flex gap-1 text-[#bf1650]">
@@ -87,13 +90,16 @@ function PlaceForm({
             </div>
           )}
 
-          <label className="label-form">Описание заведения</label>
+          <label className="label-form" htmlFor="descriptionplace">
+            Описание заведения
+          </label>
           <textarea
             className="form-input"
             {...register('descriptionPlace', { required: true })}
             cols={10}
             rows={8}
             defaultValue={existingDescription || ''}
+            id="descriptionplace"
           />
           {errors?.descriptionPlace?.type === 'required' && (
             <div className="flex gap-1 text-[#bf1650]">
