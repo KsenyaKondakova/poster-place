@@ -12,9 +12,11 @@ export interface IPlaceState {
 export interface ICategorList {
   _id: number | null;
   name: string;
+  parent: ICategorList | null;
 }
 export interface ICategoryState {
   categoryList: ICategorList[];
+  parentCategory: string | null;
 }
 export interface NewPlaceForm {
   placeName: string;
