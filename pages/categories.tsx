@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import { setCategories } from '@/redux/slices/categorySlice';
+import { setCategories, setParentCategory } from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
 import { NewCategoryForm } from '@/types/placesType';
 import axios from 'axios';
@@ -17,29 +17,31 @@ function Categories() {
   } = useForm<NewCategoryForm>();
   const dispatch = useDispatch();
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
+  const parentCategory = useSelector((state: RootState) => state.categorySlice.parentCategory);
   const [categoryName, setCategoryName] = useState('');
 
   const saveCategory = async () => {
-    await axios.post('/api/categories', { categoryName });
+    await axios.post('/api/categories', { categoryName, parentCategory });
     setCategoryName('');
   };
 
   useEffect(() => {
     axios.get('/api/categories').then((response) => {
       dispatch(setCategories(response.data));
+      console.log(categories);
     });
   }, []);
   return (
     <Layout>
-      <h1 className="text-2xl text-neutral-800 mb-4">Категории</h1>
+      <h1 className="text-2xl text-neutral-800">Категории</h1>
       <form
         onSubmit={handleSubmit(saveCategory)}
-        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-3xl">
+        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl">
         <label className="label-form" htmlFor="categoryname">
           Название новой категории
         </label>
-        <div className=" flex gap-x-4 items-start">
-          <div className="w-full flex flex-col gap-y-2">
+        <div className="flex flex-col gap-y-2">
+          <div className="flex gap-x-4">
             <input
               className="form-input"
               type="text"
@@ -49,43 +51,56 @@ function Categories() {
               value={categoryName}
               onChange={(ev) => setCategoryName(ev.target.value)}
             />
-            {errors?.categoryName?.type === 'required' && (
-              <div className="flex gap-1 text-[#bf1650]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
-                  />
-                </svg>
-                <p>Это поле должно быть заполнено</p>
-              </div>
-            )}
+            <select
+              className="select-form"
+              value={parentCategory || ''}
+              onChange={(ev) => dispatch(setParentCategory(ev.target.value))}>
+              <option value="">Нет родительской категории</option>
+              {categories.length > 0 &&
+                categories.map((category) => <option key={category._id}>{category.name}</option>)}
+            </select>
+            <button type="submit" className="button-edit">
+              Сохранить
+            </button>
           </div>
-          <button type="submit" className="button-edit">
-            Сохранить
-          </button>
+
+          {errors?.categoryName?.type === 'required' && (
+            <div className="flex gap-1 text-[#bf1650]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+              <p>Это поле должно быть заполнено</p>
+            </div>
+          )}
         </div>
       </form>
-      <table className="basic mt-4">
-        <thead>
-          <tr>
-            <td>Название заведения</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="mt-4 flex flex-col bg-nav-gray rounded-2xl">
+        <div className="text-gray-400 pt-4 pb-2 mx-4 flex border-b-2 border-gray-600">
+          <span className="basis-1/3">Название категории</span>
+          <span className="basis-1/3">Родиительская категория</span>
+          <span className="basis-1/3">Редкатировать</span>
+        </div>
+        <div className="flex flex-col">
           {categories.map((category) => (
-            <tr key={category._id}>
-              <td>{category.name}</td>
-              <td>
-                <Link href={'/categories/edit/' + category._id}>
+            <article className="flex pt-4 pb-2 mx-4 border-b-2 border-gray-600" key={category._id}>
+              <span className="basis-1/3 text-orange-50">{category.name}</span>
+              <span className="basis-1/3 text-orange-50">
+                {category.parent
+                  ? categories.find((c) => c._id === category.parent)?.name
+                  : 'Нет родительской категории'}
+              </span>
+              <div className="basis-1/3">
+                <Link className="edit__buttons" href={'/categories/edit/' + category._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -101,7 +116,7 @@ function Categories() {
                   </svg>
                   <span>Редактировать</span>
                 </Link>
-                <Link href={'/categories/delete/' + category._id}>
+                <Link className="edit__buttons" href={'/categories/delete/' + category._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -118,11 +133,11 @@ function Categories() {
 
                   <span>Удалить</span>
                 </Link>
-              </td>
-            </tr>
+              </div>
+            </article>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </Layout>
   );
 }
