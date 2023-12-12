@@ -1,5 +1,5 @@
 import Layout from '@/components/Layout';
-import { setCategories } from '@/redux/slices/categorySlice';
+import { setCategories, setParentCategory } from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
 import { NewCategoryForm } from '@/types/placesType';
 import axios from 'axios';
@@ -17,16 +17,18 @@ function Categories() {
   } = useForm<NewCategoryForm>();
   const dispatch = useDispatch();
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
+  const parentCategory = useSelector((state: RootState) => state.categorySlice.parentCategory);
   const [categoryName, setCategoryName] = useState('');
 
   const saveCategory = async () => {
-    await axios.post('/api/categories', { categoryName });
+    await axios.post('/api/categories', { categoryName, parentCategory });
     setCategoryName('');
   };
 
   useEffect(() => {
     axios.get('/api/categories').then((response) => {
       dispatch(setCategories(response.data));
+      console.log(categories);
     });
   }, []);
   return (
@@ -34,20 +36,34 @@ function Categories() {
       <h1 className="text-2xl text-neutral-800">Категории</h1>
       <form
         onSubmit={handleSubmit(saveCategory)}
-        className="text-form flex gap-y-2 bg-nav-gray p-6 rounded-3xl">
-        <div className="flex flex-col w-full">
-          <label className="label-form" htmlFor="categoryname">
-            Название новой категории
-          </label>
-          <input
-            className="form-input"
-            type="text"
-            {...register('categoryName', { required: true })}
-            placeholder={'Название категории'}
-            id="categoryname"
-            value={categoryName}
-            onChange={(ev) => setCategoryName(ev.target.value)}
-          />
+        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl">
+        <label className="label-form" htmlFor="categoryname">
+          Название новой категории
+        </label>
+        <div className="flex flex-col gap-y-2">
+          <div className="flex gap-x-4">
+            <input
+              className="form-input"
+              type="text"
+              {...register('categoryName', { required: true })}
+              placeholder={'Название категории'}
+              id="categoryname"
+              value={categoryName}
+              onChange={(ev) => setCategoryName(ev.target.value)}
+            />
+            <select
+              className="select-form"
+              value={parentCategory || ''}
+              onChange={(ev) => dispatch(setParentCategory(ev.target.value))}>
+              <option value="">Нет родительской категории</option>
+              {categories.length > 0 &&
+                categories.map((category) => <option key={category._id}>{category.name}</option>)}
+            </select>
+            <button type="submit" className="button-edit">
+              Сохранить
+            </button>
+          </div>
+
           {errors?.categoryName?.type === 'required' && (
             <div className="flex gap-1 text-[#bf1650]">
               <svg
@@ -67,23 +83,24 @@ function Categories() {
             </div>
           )}
         </div>
-        <button type="submit" className="button-edit">
-          Сохранить
-        </button>
       </form>
-      <table className="basic mt-4">
-        <thead>
-          <tr>
-            <td>Название заведения</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="mt-4 flex flex-col bg-nav-gray rounded-2xl">
+        <div className="text-gray-400 pt-4 pb-2 mx-4 flex border-b-2 border-gray-600">
+          <span className="basis-1/3">Название категории</span>
+          <span className="basis-1/3">Родиительская категория</span>
+          <span className="basis-1/3">Редкатировать</span>
+        </div>
+        <div className="flex flex-col">
           {categories.map((category) => (
-            <tr key={category._id}>
-              <td>{category.name}</td>
-              <td>
-                <Link href={'/categories/edit/' + category._id}>
+            <article className="flex pt-4 pb-2 mx-4 border-b-2 border-gray-600" key={category._id}>
+              <span className="basis-1/3 text-orange-50">{category.name}</span>
+              <span className="basis-1/3 text-orange-50">
+                {category.parent
+                  ? categories.find((c) => c._id === category.parent)?.name
+                  : 'Нет родительской категории'}
+              </span>
+              <div className="basis-1/3">
+                <Link className="edit__buttons" href={'/categories/edit/' + category._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -99,7 +116,7 @@ function Categories() {
                   </svg>
                   <span>Редактировать</span>
                 </Link>
-                <Link href={'/categories/delete/' + category._id}>
+                <Link className="edit__buttons" href={'/categories/delete/' + category._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -116,11 +133,11 @@ function Categories() {
 
                   <span>Удалить</span>
                 </Link>
-              </td>
-            </tr>
+              </div>
+            </article>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </Layout>
   );
 }
