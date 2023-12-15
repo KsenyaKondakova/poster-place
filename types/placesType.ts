@@ -3,6 +3,7 @@ export interface IPlaceList {
   title: string;
   description: string;
   images?: string[];
+  category: string;
 }
 
 export interface IPlaceState {
@@ -23,6 +24,7 @@ export interface NewPlaceForm {
   placeName: string;
   descriptionPlace: string;
   images: string[];
+  category: string;
 }
 export interface NewCategoryForm {
   categoryName: string;
