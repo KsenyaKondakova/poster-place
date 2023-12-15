@@ -14,7 +14,7 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
 
       // Проверяем, существует ли родительская категория по имени
       if (parentCategory) {
-        const parentCategoryDoc = await Category.findOne({ name: parentCategory });
+        const parentCategoryDoc = await Category.findOne({ _id: parentCategory });
         if (parentCategoryDoc) {
           parentId = parentCategoryDoc._id;
         } else {
