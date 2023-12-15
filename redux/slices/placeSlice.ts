@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: IPlaceState = {
   placeList: [],
-  placeInfo: { _id: null, title: '', description: '' },
+  placeInfo: { _id: null, title: '', description: '', category: '' },
 };
 
 export const placeSlice = createSlice({
