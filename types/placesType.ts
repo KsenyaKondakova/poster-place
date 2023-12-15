@@ -3,6 +3,7 @@ export interface IPlaceList {
   title: string;
   description: string;
   images?: string[];
+  category: string;
 }
 
 export interface IPlaceState {
@@ -10,18 +11,20 @@ export interface IPlaceState {
   placeInfo: IPlaceList;
 }
 export interface ICategorList {
-  _id: number | null;
+  _id: number | string | null;
   name: string;
-  parent: ICategorList | null;
+  parent: ICategorList | string | null;
 }
 export interface ICategoryState {
   categoryList: ICategorList[];
-  parentCategory: string | null;
+  parentCategory: ICategorList | string | null;
+  editedCategory: ICategorList | null | string;
 }
 export interface NewPlaceForm {
   placeName: string;
   descriptionPlace: string;
   images: string[];
+  category: string;
 }
 export interface NewCategoryForm {
   categoryName: string;

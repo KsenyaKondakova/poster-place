@@ -1,9 +1,9 @@
 import Layout from '@/components/Layout';
-import { setCategories, setParentCategory } from '@/redux/slices/categorySlice';
+import { setCategories, setEditedCategory, setParentCategory } from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
-import { NewCategoryForm } from '@/types/placesType';
+import { ICategorList, NewCategoryForm } from '@/types/placesType';
 import axios from 'axios';
-import Link from 'next/link';
+import Swal from 'sweetalert2';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,27 +18,71 @@ function Categories() {
   const dispatch = useDispatch();
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
   const parentCategory = useSelector((state: RootState) => state.categorySlice.parentCategory);
+  const editedCategory = useSelector((state: RootState) => state.categorySlice.editedCategory);
   const [categoryName, setCategoryName] = useState('');
 
-  const saveCategory = async () => {
-    await axios.post('/api/categories', { categoryName, parentCategory });
-    setCategoryName('');
-  };
-
-  useEffect(() => {
+  const fetchCategories = () => {
     axios.get('/api/categories').then((response) => {
       dispatch(setCategories(response.data));
-      console.log(categories);
     });
+  };
+  const saveCategory = async () => {
+    const data = { categoryName, parentCategory };
+    if (editedCategory) {
+      const idEditedCategory = typeof editedCategory === 'object' && editedCategory._id;
+      await axios.put('/api/categories', { ...data, _id: idEditedCategory });
+      dispatch(setEditedCategory(null));
+    } else {
+      await axios.post('/api/categories', data);
+    }
+    setCategoryName('');
+    dispatch(setParentCategory(null));
+    fetchCategories();
+  };
+
+  const editCategory = (category: ICategorList) => {
+    dispatch(setEditedCategory(category));
+    if (category.parent instanceof Object) {
+      dispatch(setParentCategory(category.parent._id as string));
+    } else {
+      dispatch(setParentCategory(null));
+    }
+    setCategoryName(category.name);
+  };
+
+  const deleteCategory = (category: ICategorList) => {
+    Swal.fire({
+      title: 'Ты уверен?',
+      text: `Удалить категорию ${category.name}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#4ade80',
+      cancelButtonColor: '#d33',
+      reverseButtons: true,
+      confirmButtonText: 'Да, удалить',
+      cancelButtonText: 'Отменить',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axios.delete(`/api/categories?_id=${category._id}`);
+        fetchCategories();
+        Swal.fire('Категория удалена!', '', 'success');
+      }
+    });
+  };
+  useEffect(() => {
+    fetchCategories();
   }, []);
+
   return (
     <Layout>
       <h1 className="text-2xl text-neutral-800">Категории</h1>
       <form
         onSubmit={handleSubmit(saveCategory)}
-        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl">
+        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl mt-2">
         <label className="label-form" htmlFor="categoryname">
-          Название новой категории
+          {editedCategory && typeof editedCategory === 'object'
+            ? `Редактировать категорию ${editedCategory.name}`
+            : ' Название новой категории'}
         </label>
         <div className="flex flex-col gap-y-2">
           <div className="flex gap-x-4">
@@ -53,11 +97,21 @@ function Categories() {
             />
             <select
               className="select-form"
-              value={parentCategory || ''}
+              value={
+                parentCategory
+                  ? typeof parentCategory === 'object'
+                    ? (parentCategory._id as string)
+                    : (parentCategory as string)
+                  : ''
+              }
               onChange={(ev) => dispatch(setParentCategory(ev.target.value))}>
               <option value="">Нет родительской категории</option>
               {categories.length > 0 &&
-                categories.map((category) => <option key={category._id}>{category.name}</option>)}
+                categories.map((category) => (
+                  <option key={category._id} value={category._id || ''}>
+                    {category.name}
+                  </option>
+                ))}
             </select>
             <button type="submit" className="button-edit">
               Сохранить
@@ -96,11 +150,13 @@ function Categories() {
               <span className="basis-1/3 text-orange-50">{category.name}</span>
               <span className="basis-1/3 text-orange-50">
                 {category.parent
-                  ? categories.find((c) => c._id === category.parent)?.name
+                  ? typeof category.parent === 'string'
+                    ? category.parent // Если parent - это строка, значит, это ObjectId, который не использовался с populate
+                    : category.parent.name // Если parent - это объект, содержащий документ категории
                   : 'Нет родительской категории'}
               </span>
               <div className="basis-1/3">
-                <Link className="edit__buttons" href={'/categories/edit/' + category._id}>
+                <button className="edit__buttons" onClick={() => editCategory(category)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -115,8 +171,8 @@ function Categories() {
                     />
                   </svg>
                   <span>Редактировать</span>
-                </Link>
-                <Link className="edit__buttons" href={'/categories/delete/' + category._id}>
+                </button>
+                <button className="edit__buttons" onClick={() => deleteCategory(category)}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -132,7 +188,7 @@ function Categories() {
                   </svg>
 
                   <span>Удалить</span>
-                </Link>
+                </button>
               </div>
             </article>
           ))}

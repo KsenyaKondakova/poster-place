@@ -8,11 +8,12 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     await mongooseConnect();
 
     if (method === 'POST') {
-      const { placeName, descriptionPlace, images } = req.body;
+      const { placeName, descriptionPlace, images, category } = req.body;
       const placeDoc = await Place.create({
         title: placeName,
         description: descriptionPlace,
         images,
+        category,
       });
       res.json(placeDoc);
     }
@@ -32,10 +33,10 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     }
 
     if (method === 'PUT') {
-      const { placeName, descriptionPlace, images, _id } = req.body;
+      const { placeName, descriptionPlace, images, category, _id } = req.body;
       const updatedPlace = await Place.findOneAndUpdate(
         { _id },
-        { title: placeName, description: descriptionPlace, images },
+        { title: placeName, description: descriptionPlace, images, category },
         { new: true },
       );
       console.log('картинки', images);

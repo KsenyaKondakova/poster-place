@@ -14,7 +14,7 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
 
       // Проверяем, существует ли родительская категория по имени
       if (parentCategory) {
-        const parentCategoryDoc = await Category.findOne({ name: parentCategory });
+        const parentCategoryDoc = await Category.findOne({ _id: parentCategory });
         if (parentCategoryDoc) {
           parentId = parentCategoryDoc._id;
         } else {
@@ -28,8 +28,21 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
       res.json(categoryDoc);
     }
     if (method === 'GET') {
-      const categories = await Category.find().populate('parent').exec();
+      const categories = await Category.find().populate('parent');
       res.json(categories);
+    }
+    if (method === 'PUT') {
+      const { categoryName, parentCategory, _id } = req.body;
+      const catDoc = await Category.updateOne(
+        { _id },
+        { name: categoryName, parent: parentCategory },
+      );
+      res.json(catDoc);
+    }
+    if (method === 'DELETE') {
+      const { _id } = req.query;
+      await Category.deleteOne({ _id });
+      res.json('ок');
     }
   } catch (error) {
     console.error('Server error:', error);

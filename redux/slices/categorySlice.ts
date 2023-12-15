@@ -5,6 +5,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 const initialState: ICategoryState = {
   categoryList: [],
   parentCategory: null,
+  editedCategory: null,
 };
 
 export const categorySlice = createSlice({
@@ -17,9 +18,12 @@ export const categorySlice = createSlice({
     setParentCategory: (state, action: PayloadAction<string | null>) => {
       state.parentCategory = action.payload;
     },
+    setEditedCategory: (state, action: PayloadAction<ICategorList | string | null>) => {
+      state.editedCategory = action.payload;
+    },
   },
 });
 
-export const { setCategories, setParentCategory } = categorySlice.actions;
+export const { setCategories, setParentCategory, setEditedCategory } = categorySlice.actions;
 
 export default categorySlice.reducer;
