@@ -1,5 +1,6 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { Place } from '@/models/Place';
+import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -8,12 +9,22 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     await mongooseConnect();
 
     if (method === 'POST') {
-      const { placeName, descriptionPlace, images, category } = req.body;
+      const { placeName, descriptionPlace, images, category, news } = req.body;
+
+      const parentId = new mongoose.Types.ObjectId();
+
+      const newsWithParent = news.map((newsItem: any) => ({
+        ...newsItem,
+        parent: parentId,
+      }));
+
       const placeDoc = await Place.create({
+        _id: parentId,
         title: placeName,
         description: descriptionPlace,
         images,
         category,
+        news: newsWithParent,
       });
       res.json(placeDoc);
     }
@@ -33,10 +44,10 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     }
 
     if (method === 'PUT') {
-      const { placeName, descriptionPlace, images, category, _id } = req.body;
+      const { placeName, descriptionPlace, images, category, news, _id } = req.body;
       const updatedPlace = await Place.findOneAndUpdate(
         { _id },
-        { title: placeName, description: descriptionPlace, images, category },
+        { title: placeName, description: descriptionPlace, images, category, news },
         { new: true },
       );
       console.log('картинки', images);

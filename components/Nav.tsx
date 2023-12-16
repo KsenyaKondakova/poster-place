@@ -96,7 +96,7 @@ function Nav() {
 
           <span>Категории</span>
         </Link>
-        <Link href={'/places'} className={pathname === '/products' ? activeLink : inactiveLink}>
+        <Link href={'/places'} className={pathname === '/places' ? activeLink : inactiveLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

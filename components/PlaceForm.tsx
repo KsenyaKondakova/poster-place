@@ -2,13 +2,20 @@ import React, { useEffect, useState, ChangeEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
-import { IPlaceList, NewPlaceForm } from '@/types/placesType';
+import { IPlaceList, NewPlaceForm, NewsList } from '@/types/placesType';
 import { link } from 'fs';
 import Spinner from './Spinner';
 import { ReactSortable } from 'react-sortablejs';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories } from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
+import {
+  addNews,
+  removeNews,
+  setPlaceInfo,
+  updateNewsName,
+  updateNewsText,
+} from '@/redux/slices/placeSlice';
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
@@ -19,9 +26,11 @@ function PlaceForm({
   description: existingDescription,
   images: existingImages,
   category: existigCategory,
+  news: existingNews,
 }: IPlaceList) {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
+  const placeInfo = useSelector((state: RootState) => state.placeSlice.placeInfo);
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>(existingImages || ([] as string[]));
@@ -35,11 +44,13 @@ function PlaceForm({
 
   const onSubmit = async (data: NewPlaceForm) => {
     if (_id) {
-      await axios.put('/api/places', { ...data, images, _id });
+      await axios.put('/api/places', { ...data, images, news: placeInfo.news, _id });
     } else {
-      await axios.post('/api/places', { ...data, images });
+      await axios.post('/api/places', { ...data, images, news: placeInfo.news });
     }
     setGoToPlaces(true);
+    setImages([]);
+    dispatch(setPlaceInfo({ _id: null, title: '', description: '', category: '', news: [] }));
   };
   if (goToPlaces) {
     router.push('/places');
@@ -63,12 +74,26 @@ function PlaceForm({
   const updateImagesOrder = (images: string[]) => {
     setImages(images);
   };
-
+  const handleAddNews = () => {
+    dispatch(addNews());
+  };
+  const handleUpdateNewsName = (index: number, newsItem: NewsList, newName: string) => {
+    dispatch(updateNewsName({ index, newsItem, newName }));
+  };
+  const handleUpdateNewsText = (index: number, newsItem: NewsList, newText: string) => {
+    dispatch(updateNewsText({ index, newsItem, newText }));
+  };
+  const handleRemoveNews = (index: number) => {
+    dispatch(removeNews({ index }));
+  };
   useEffect(() => {
     axios.get('/api/categories').then((res) => {
       dispatch(setCategories(res.data));
     });
   }, []);
+  useEffect(() => {
+    console.log(placeInfo);
+  }, [placeInfo]);
 
   return (
     <>
@@ -204,7 +229,53 @@ function PlaceForm({
             </label>
           </div>
         </div>
-
+        <div className="news-form flex gap-y-2 flex-col bg-amber-100 ">
+          {placeInfo.news.length > 0 &&
+            placeInfo.news.map((newsItem, index) => (
+              <div key={index} className="bg-nav-gray p-6 rounded-3xl relative">
+                <button
+                  className="absolute top-3 right-4"
+                  type="button"
+                  onClick={() => handleRemoveNews(index)}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="#ff6a6a"
+                    className="w-7 h-7">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <label className="label-form" htmlFor="newsName">
+                  Название новости
+                </label>
+                <input
+                  className="form-input"
+                  id="newsName"
+                  value={newsItem.newsName}
+                  onChange={(ev) => handleUpdateNewsName(index, newsItem, ev.target.value)}
+                />
+                <label className="label-form" htmlFor="newsText">
+                  Текст новости
+                </label>
+                <textarea
+                  className="form-input"
+                  cols={10}
+                  rows={8}
+                  id="newsText"
+                  value={newsItem.newsText}
+                  onChange={(ev) => handleUpdateNewsText(index, newsItem, ev.target.value)}
+                />
+              </div>
+            ))}
+          <div className="bg-nav-gray p-6 rounded-3xl">
+            <button className="edit__buttons" type="button" onClick={handleAddNews}>
+              Добавить новость
+            </button>
+          </div>
+        </div>
+        <div className="afisha-form flex gap-y-2 flex-col bg-nav-gray p-6 rounded-3xl"></div>
         <div className="button-form flex justify-center items-center">
           <input className="submit-btn" type="submit" value="Отправить" />
         </div>

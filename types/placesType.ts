@@ -4,6 +4,7 @@ export interface IPlaceList {
   description: string;
   images?: string[];
   category: string;
+  news: NewsList[];
 }
 
 export interface IPlaceState {
@@ -20,11 +21,18 @@ export interface ICategoryState {
   parentCategory: ICategorList | string | null;
   editedCategory: ICategorList | null | string;
 }
+export interface NewsList {
+  _id: number | string | null;
+  newsName: string;
+  newsText: string;
+  parent: number | string | null;
+}
 export interface NewPlaceForm {
   placeName: string;
   descriptionPlace: string;
   images: string[];
   category: string;
+  news: NewsList[];
 }
 export interface NewCategoryForm {
   categoryName: string;
