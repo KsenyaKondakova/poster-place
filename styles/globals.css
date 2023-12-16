@@ -23,10 +23,11 @@
 .form-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 8fr 1fr;
+  grid-template-rows: auto auto auto;
   gap: 8px 8px;
   grid-template-areas:
     'text image'
+    'news afisha'
     'button button';
 }
 .button-form {
@@ -37,6 +38,12 @@
 }
 .image-form {
   grid-area: image;
+}
+.news-form {
+  grid-area: news;
+}
+.afisha-form {
+  grid-area: afisha;
 }
 table.basic thead tr td {
   @apply bg-nav-gray text-orange-50;
