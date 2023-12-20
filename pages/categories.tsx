@@ -3,7 +3,7 @@ import { setCategories, setEditedCategory, setParentCategory } from '@/redux/sli
 import { RootState } from '@/redux/store';
 import { ICategorList, NewCategoryForm } from '@/types/placesType';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -50,25 +50,7 @@ function Categories() {
     setCategoryName(category.name);
   };
 
-  const deleteCategory = (category: ICategorList) => {
-    Swal.fire({
-      title: 'Ты уверен?',
-      text: `Удалить категорию ${category.name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#4ade80',
-      cancelButtonColor: '#d33',
-      reverseButtons: true,
-      confirmButtonText: 'Да, удалить',
-      cancelButtonText: 'Отменить',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await axios.delete(`/api/categories?_id=${category._id}`);
-        fetchCategories();
-        Swal.fire('Категория удалена!', '', 'success');
-      }
-    });
-  };
+  const deleteCategory = (category: ICategorList) => {};
   useEffect(() => {
     fetchCategories();
   }, []);
