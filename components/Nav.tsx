@@ -9,7 +9,7 @@ function Nav() {
     'flex gap-2 text-xl font-extralight bg-nav-gray p-3 rounded-2xl hover:shadow-lg transition duration-300 ease-in-out  hover:shadow-amber-100';
   const activeLink: string = inactiveLink + ' bg-nav-yellow text-neutral-800';
   return (
-    <aside className="flex flex-col gap-4 text-orange-50 p-4">
+    <aside className="flex flex-col gap-4 text-orange-50 p-4 w-1/5">
       <Link href={'/'} className="flex gap-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"

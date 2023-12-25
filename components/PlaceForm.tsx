@@ -60,7 +60,11 @@ function PlaceForm({
     router.push('/places');
   }
 
-  const uploadImages = async (ev: IUploadImagesEvent) => {
+  const uploadImagesOrAfisha = async (
+    ev: IUploadImagesEvent,
+    setFiles: React.Dispatch<React.SetStateAction<string[]>>,
+    setIsUploading: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
     const files = ev.target?.files;
     if (files && files?.length > 0) {
       setIsUploading(true);
@@ -69,26 +73,17 @@ function PlaceForm({
         data.append('file', file);
       }
       const res = await axios.put('/api/upload', data);
-      setImages((oldImages) => {
-        return [...oldImages, ...res.data.links];
-      });
+      setFiles((oldFiles) => [...oldFiles, ...res.data.links]);
       setIsUploading(false);
     }
   };
-  const uploadAfisha = async (ev: IUploadImagesEvent) => {
-    const files = ev.target?.files;
-    if (files && files?.length > 0) {
-      setIsUploadingAfisha(true);
-      const data = new FormData();
-      for (const file of files) {
-        data.append('file', file);
-      }
-      const res = await axios.put('/api/upload', data);
-      setAfisha((oldImages) => {
-        return [...oldImages, ...res.data.links];
-      });
-      setIsUploadingAfisha(false);
-    }
+
+  const uploadImages = (ev: IUploadImagesEvent) => {
+    uploadImagesOrAfisha(ev, setImages, setIsUploading);
+  };
+
+  const uploadAfisha = (ev: IUploadImagesEvent) => {
+    uploadImagesOrAfisha(ev, setAfisha, setIsUploadingAfisha);
   };
   const updateImagesOrder = (images: string[]) => {
     setImages(images);
