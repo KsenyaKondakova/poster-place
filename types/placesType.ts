@@ -5,6 +5,7 @@ export interface IPlaceList {
   images?: string[];
   category: string;
   news: NewsList[];
+  afisha?: string[];
 }
 
 export interface IPlaceState {

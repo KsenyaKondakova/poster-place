@@ -27,6 +27,7 @@ function PlaceForm({
   images: existingImages,
   category: existigCategory,
   news: existingNews,
+  afisha: existingAfisha,
 }: IPlaceList) {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
@@ -34,7 +35,9 @@ function PlaceForm({
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
   const [goToPlaces, setGoToPlaces] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>(existingImages || ([] as string[]));
+  const [afisha, setAfisha] = useState<string[]>(existingAfisha || ([] as string[]));
   const [isUplouding, setIsUploading] = useState<boolean>(false);
+  const [isUploudingAfisha, setIsUploadingAfisha] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -44,19 +47,24 @@ function PlaceForm({
 
   const onSubmit = async (data: NewPlaceForm) => {
     if (_id) {
-      await axios.put('/api/places', { ...data, images, news: placeInfo.news, _id });
+      await axios.put('/api/places', { ...data, images, afisha, news: placeInfo.news, _id });
     } else {
-      await axios.post('/api/places', { ...data, images, news: placeInfo.news });
+      await axios.post('/api/places', { ...data, images, afisha, news: placeInfo.news });
     }
     setGoToPlaces(true);
     setImages([]);
+    setAfisha([]);
     dispatch(setPlaceInfo({ _id: null, title: '', description: '', category: '', news: [] }));
   };
   if (goToPlaces) {
     router.push('/places');
   }
-  console.log(images);
-  const uploadImages = async (ev: IUploadImagesEvent) => {
+
+  const uploadImagesOrAfisha = async (
+    ev: IUploadImagesEvent,
+    setFiles: React.Dispatch<React.SetStateAction<string[]>>,
+    setIsUploading: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
     const files = ev.target?.files;
     if (files && files?.length > 0) {
       setIsUploading(true);
@@ -65,11 +73,17 @@ function PlaceForm({
         data.append('file', file);
       }
       const res = await axios.put('/api/upload', data);
-      setImages((oldImages) => {
-        return [...oldImages, ...res.data.links];
-      });
+      setFiles((oldFiles) => [...oldFiles, ...res.data.links]);
       setIsUploading(false);
     }
+  };
+
+  const uploadImages = (ev: IUploadImagesEvent) => {
+    uploadImagesOrAfisha(ev, setImages, setIsUploading);
+  };
+
+  const uploadAfisha = (ev: IUploadImagesEvent) => {
+    uploadImagesOrAfisha(ev, setAfisha, setIsUploadingAfisha);
   };
   const updateImagesOrder = (images: string[]) => {
     setImages(images);
@@ -92,8 +106,9 @@ function PlaceForm({
     });
   }, []);
   useEffect(() => {
-    console.log(placeInfo);
-  }, [placeInfo]);
+    console.log('афиша', afisha);
+    console.log('картинки', images);
+  }, [afisha, images]);
 
   return (
     <>
@@ -203,8 +218,8 @@ function PlaceForm({
                 images.map((link) => (
                   <div
                     key={link}
-                    className="h-28 w-28 overflow-hidden flex items-center justify-center">
-                    <img src={link} className="min-h-full min-w-full shrink-0" />
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center">
+                    <img src={link} className="w-auto h-full" />
                   </div>
                 ))}
             </ReactSortable>
@@ -229,7 +244,9 @@ function PlaceForm({
             </label>
           </div>
         </div>
+
         <div className="news-form flex gap-y-2 flex-col bg-amber-100 ">
+          <label className="text-2xl">Новости</label>
           {placeInfo.news.length > 0 &&
             placeInfo.news.map((newsItem, index) => (
               <div key={index} className="bg-nav-gray p-6 rounded-3xl relative">
@@ -268,14 +285,47 @@ function PlaceForm({
                   onChange={(ev) => handleUpdateNewsText(index, newsItem, ev.target.value)}
                 />
               </div>
-            ))}
+            ))}{' '}
           <div className="bg-nav-gray p-6 rounded-3xl">
             <button className="edit__buttons" type="button" onClick={handleAddNews}>
               Добавить новость
             </button>
           </div>
         </div>
-        <div className="afisha-form flex gap-y-2 flex-col bg-nav-gray p-6 rounded-3xl"></div>
+        <div className="afisha-form flex gap-y-2 flex-col bg-amber-100 ">
+          <label className="text-2xl">Афиша</label>
+          <div className="bg-nav-gray p-6 rounded-3xl relative">
+            <div className="mb-4 flex flex-wrap gap-2">
+              {!!afisha?.length &&
+                afisha.map((link) => (
+                  <div
+                    key={link}
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center">
+                    <img src={link} className="w-auto h-full" />
+                  </div>
+                ))}
+
+              {isUploudingAfisha && (
+                <div className="h-28 p-1 flex items-center">
+                  <Spinner />
+                </div>
+              )}
+              <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-8 h-8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span>Добавить фото</span>
+                <input type="file" className="hidden" onChange={uploadAfisha} />
+              </label>
+            </div>
+          </div>
+        </div>
         <div className="button-form flex justify-center items-center">
           <input className="submit-btn" type="submit" value="Отправить" />
         </div>

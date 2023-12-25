@@ -9,7 +9,7 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     await mongooseConnect();
 
     if (method === 'POST') {
-      const { placeName, descriptionPlace, images, category, news } = req.body;
+      const { placeName, descriptionPlace, images, category, news, afisha } = req.body;
 
       const parentId = new mongoose.Types.ObjectId();
 
@@ -23,6 +23,7 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         title: placeName,
         description: descriptionPlace,
         images,
+        afisha,
         category,
         news: newsWithParent,
       });
@@ -44,13 +45,14 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     }
 
     if (method === 'PUT') {
-      const { placeName, descriptionPlace, images, category, news, _id } = req.body;
+      const { placeName, descriptionPlace, images, afisha, category, news, _id } = req.body;
       const updatedPlace = await Place.findOneAndUpdate(
         { _id },
-        { title: placeName, description: descriptionPlace, images, category, news },
+        { title: placeName, description: descriptionPlace, images, category, news, afisha },
         { new: true },
       );
       console.log('картинки', images);
+      console.log('афиша', afisha);
       if (updatedPlace) {
         res.json(updatedPlace);
       } else {
