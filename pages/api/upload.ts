@@ -75,5 +75,9 @@ export default async function handle(req: any, res: any) {
 }
 
 export const config = {
-  api: { bodyParser: false },
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
 };
