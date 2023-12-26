@@ -1,24 +1,25 @@
 import Layout from '@/components/Layout';
-import { setPlaces } from '@/redux/slices/placeSlice';
 import { RootState } from '@/redux/store';
 import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setNews } from '../redux/slices/newsSlice';
+
 //test
-function Places() {
+function News() {
   const dispatch = useDispatch();
-  const places = useSelector((state: RootState) => state.placeSlice.placeList);
+  const news = useSelector((state: RootState) => state.newsSlice.newsList);
   useEffect(() => {
-    axios.get('/api/places').then((response) => {
-      dispatch(setPlaces(response.data));
+    axios.get('/api/news').then((response) => {
+      dispatch(setNews(response.data));
     });
   }, []);
   return (
     <Layout>
-      <Link href={'/places/new'} className="submit-btn">
-        Добавить новое заведение
+      <Link href={'/news/new'} className="submit-btn">
+        Добавить новость
       </Link>
       <div className="mt-4 flex flex-col bg-nav-gray rounded-2xl">
         <div className="text-gray-400 pt-4 pb-2 mx-4 flex border-b-2 border-gray-600">
@@ -26,13 +27,13 @@ function Places() {
           <span className="basis-1/3">Редактировать</span>
         </div>
         <div className="flex flex-col">
-          {places.map((place) => (
+          {news.map((newsItem) => (
             <article
-              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center"
-              key={place._id}>
-              <span className="basis-2/3 text-orange-50">{place.title}</span>
+              key={newsItem._id}
+              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center">
+              <span className="basis-2/3 text-orange-50">{newsItem.newsName}</span>
               <div className="basis-1/3 flex items-center">
-                <Link className="edit__buttons" href={'/places/edit/' + place._id}>
+                <Link className="edit__buttons" href={'/news/edit/' + newsItem._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -48,7 +49,7 @@ function Places() {
                   </svg>
                   <span>Редактировать</span>
                 </Link>
-                <Link className="edit__buttons" href={'/places/delete/' + place._id}>
+                <Link className="edit__buttons" href={'/news/delete/' + newsItem._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -74,4 +75,4 @@ function Places() {
   );
 }
 
-export default Places;
+export default News;

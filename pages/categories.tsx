@@ -123,12 +123,14 @@ function Categories() {
       <div className="mt-4 flex flex-col bg-nav-gray rounded-2xl">
         <div className="text-gray-400 pt-4 pb-2 mx-4 flex border-b-2 border-gray-600">
           <span className="basis-1/3">Название категории</span>
-          <span className="basis-1/3">Родиительская категория</span>
-          <span className="basis-1/3">Редкатировать</span>
+          <span className="basis-1/3">Родительская категория</span>
+          <span className="basis-1/3">Редактировать</span>
         </div>
         <div className="flex flex-col">
           {categories.map((category) => (
-            <article className="flex pt-4 pb-2 mx-4 border-b-2 border-gray-600" key={category._id}>
+            <article
+              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center"
+              key={category._id}>
               <span className="basis-1/3 text-orange-50">{category.name}</span>
               <span className="basis-1/3 text-orange-50">
                 {category.parent

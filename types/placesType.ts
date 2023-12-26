@@ -38,3 +38,12 @@ export interface NewPlaceForm {
 export interface NewCategoryForm {
   categoryName: string;
 }
+
+export interface INewsState {
+  newsList: NewsList[];
+  newsInfo: NewsList;
+}
+export interface NewNewsForm {
+  newsName: string;
+  newsText: string;
+}
