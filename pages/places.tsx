@@ -20,19 +20,19 @@ function Places() {
       <Link href={'/places/new'} className="submit-btn">
         Добавить новое заведение
       </Link>
-      <table className="basic mt-4">
-        <thead>
-          <tr>
-            <td>Название заведения</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="mt-4 flex flex-col bg-nav-gray rounded-2xl">
+        <div className="text-gray-400 pt-4 pb-2 mx-4 flex border-b-2 border-gray-600">
+          <span className="basis-2/3">Название категории</span>
+          <span className="basis-1/3">Редактировать</span>
+        </div>
+        <div className="flex flex-col">
           {places.map((place) => (
-            <tr key={place._id}>
-              <td>{place.title}</td>
-              <td>
-                <Link href={'/places/edit/' + place._id}>
+            <article
+              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center"
+              key={place._id}>
+              <span className="basis-2/3 text-orange-50">{place.title}</span>
+              <div className="basis-1/3 flex items-center">
+                <Link className="edit__buttons" href={'/places/edit/' + place._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -48,7 +48,7 @@ function Places() {
                   </svg>
                   <span>Редактировать</span>
                 </Link>
-                <Link href={'/places/delete/' + place._id}>
+                <Link className="edit__buttons" href={'/places/delete/' + place._id}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -65,11 +65,11 @@ function Places() {
 
                   <span>Удалить</span>
                 </Link>
-              </td>
-            </tr>
+              </div>
+            </article>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </Layout>
   );
 }
