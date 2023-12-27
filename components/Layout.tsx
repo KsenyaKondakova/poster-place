@@ -1,21 +1,42 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Nav from '@/components/Nav';
+import { useEffect, useState } from 'react';
 type LayoutProps = {
   children: React.ReactNode;
 };
 function Layout({ children }: LayoutProps) {
   const { data: session } = useSession();
+  const [displayMenuMobile, setDisplayMenuMobile] = useState(true);
+  const [displayContent, setDisplayContent] = useState(true);
+  const handleResize = () => {
+    setDisplayMenuMobile(window.innerWidth > 1020);
+  };
+
+  useEffect(() => {
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   if (session) {
     return (
-      <div className="flex bg-neutral-800 min-h-screen">
-        <Nav />
-        <div className="bg-yellow-100 flex-grow mt-2 mr-2 mb-2 rounded-xl p-4 w-4/5">
-          {/* Signed in as {session.user?.email} <br />
-          <button onClick={() => signOut()}>Sign out</button>
-          <br /> */}
-          {children}
-        </div>
+      <div className="flex-col lg:flex-row flex bg-neutral-800 min-h-screen">
+        <Nav
+          displayMenuMobile={displayMenuMobile}
+          setDisplayMenuMobile={setDisplayMenuMobile}
+          displayContent={displayContent}
+          setDisplayContent={setDisplayContent}
+        />
+
+        {displayContent && (
+          <div className="bg-yellow-100 flex-grow mt-2 mr-2 mb-2 rounded-xl p-4 w-full lg:w-4/5  ">
+            {children}
+          </div>
+        )}
       </div>
     );
   }

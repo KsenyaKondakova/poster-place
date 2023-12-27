@@ -1,12 +1,10 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
-
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { NextRouter, useRouter } from 'next/router';
 import Spinner from './Spinner';
-import { setAfisha, setAfishaImage, setAfishaInfo } from '@/redux/slices/afishaSlice';
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+import { setAfishaImage, setAfishaInfo } from '@/redux/slices/afishaSlice';
 import { AfishaList, NewAfishaForm } from '@/types/placesType';
 import { useForm } from 'react-hook-form';
 
@@ -57,14 +55,11 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
   if (goToAfisha) {
     router.push('/afisha');
   }
-  useEffect(() => {
-    console.log(afishaInfo);
-  }, [afishaInfo]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
       <div className="flex flex-col bg-nav-gray p-6 rounded-3xl">
-        <div className="mb-4 flex flex-wrap gap-2 justify-center">
+        <div className="mb-4 flex flex-col gap-2 justify-center items-center">
           {afishaInfo.image && (
             <div className=" overflow-hidden flex items-center justify-center">
               <img src={afishaInfo.image} className="w-auto h-full" />
@@ -87,8 +82,31 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
               <span>Добавить фото</span>
-              <input type="file" className="hidden" onChange={uploadImages} />
+              <input
+                type="file"
+                className="hidden"
+                {...register('image', { required: true })}
+                onChange={uploadImages}
+              />
             </label>
+          )}
+          {errors?.image?.type === 'required' && (
+            <div className="flex gap-1 text-[#bf1650]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+                />
+              </svg>
+              <p>Это поле должно быть заполнено</p>
+            </div>
           )}
         </div>
       </div>
