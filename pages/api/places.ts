@@ -2,12 +2,13 @@ import { mongooseConnect } from '@/lib/mongoose';
 import { Place } from '@/models/Place';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { isAdminAuth } from './auth/[...nextauth]';
 
 export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
-
+    await isAdminAuth(req, res);
     if (method === 'POST') {
       const { placeName, descriptionPlace, images, category, news, afisha } = req.body;
 

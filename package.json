@@ -19,6 +19,7 @@
     "axios": "^1.6.0",
     "eslint": "8.52.0",
     "eslint-config-next": "14.0.1",
+    "eslint-plugin-react-hooks": "^5.0.0-canary-c5b937576-20231219",
     "formidable": "^3.5.1",
     "mime-types": "^2.1.35",
     "mongodb": "^6.2.0",
@@ -34,6 +35,7 @@
     "react-spinners": "^0.13.8"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@types/formidable": "^3.4.5",
     "@types/mime-types": "^2.1.4",
     "@types/multiparty": "^0.0.36",

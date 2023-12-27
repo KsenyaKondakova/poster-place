@@ -24,7 +24,6 @@ function NewsForm({ _id, newsName: existingNewsName, newsText: existingNewsText 
       await axios.post('/api/news', { ...data });
     }
     setGoToNews(true);
-
     dispatch(setNewsInfo({ _id: null, newsName: '', newsText: '', parent: null }));
   };
   if (goToNews) {
