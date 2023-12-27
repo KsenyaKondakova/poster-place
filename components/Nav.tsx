@@ -60,7 +60,7 @@ function Nav() {
 
           <span>Новости</span>
         </Link>
-        <Link href={'/'} className={pathname === '/afish' ? activeLink : inactiveLink}>
+        <Link href={'/afisha'} className={pathname === '/afisha' ? activeLink : inactiveLink}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
