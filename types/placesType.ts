@@ -47,3 +47,14 @@ export interface NewNewsForm {
   newsName: string;
   newsText: string;
 }
+export interface AfishaList {
+  _id: number | string | null;
+  image: string;
+}
+export interface IAfishaState {
+  afishaList: AfishaList[];
+  afishaInfo: AfishaList;
+}
+export interface NewAfishaForm {
+  image: string;
+}
