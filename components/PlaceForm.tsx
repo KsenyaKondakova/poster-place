@@ -245,11 +245,11 @@ function PlaceForm({
           </div>
         </div>
 
-        <div className="news-form flex gap-y-2 flex-col bg-amber-100 ">
+        <div className="news-form flex gap-y-2 flex-col bg-amber-100 h-full ">
           <label className="text-2xl">Новости</label>
           {placeInfo.news.length > 0 &&
             placeInfo.news.map((newsItem, index) => (
-              <div key={index} className="bg-nav-gray p-6 rounded-3xl relative">
+              <div key={index} className="bg-nav-gray p-6 rounded-3xl relative ">
                 <button
                   className="absolute top-3 right-4"
                   type="button"
@@ -285,8 +285,8 @@ function PlaceForm({
                   onChange={(ev) => handleUpdateNewsText(index, newsItem, ev.target.value)}
                 />
               </div>
-            ))}{' '}
-          <div className="bg-nav-gray p-6 rounded-3xl">
+            ))}
+          <div className="bg-nav-gray p-6 rounded-3xl h-full">
             <button className="edit__buttons" type="button" onClick={handleAddNews}>
               Добавить новость
             </button>
