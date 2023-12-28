@@ -36,7 +36,7 @@ function Afisha() {
               <div className="flex items-center ">
                 <Link className="edit__buttons" href={'/afisha/delete/' + afishaItem._id}>
                   <TrashIcon />
-                  <span>Удалить</span>
+                  <span className="hidden sm:block">Удалить</span>
                 </Link>
               </div>
             </article>
