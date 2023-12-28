@@ -69,7 +69,7 @@ function Categories() {
             : ' Название новой категории'}
         </label>
         <div className="flex flex-col gap-y-2">
-          <div className="flex gap-x-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <input
               className="form-input"
               type="text"
@@ -97,7 +97,7 @@ function Categories() {
                   </option>
                 ))}
             </select>
-            <button type="submit" className="button-edit">
+            <button type="submit" className="button-edit w-full sm:w-fit">
               Сохранить
             </button>
           </div>
@@ -119,24 +119,24 @@ function Categories() {
         <div className="flex flex-col">
           {categories.map((category) => (
             <article
-              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center"
+              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center "
               key={category._id}>
-              <span className="basis-1/3 text-orange-50">{category.name}</span>
-              <span className="basis-1/3 text-orange-50">
+              <span className="basis-1/3 text-orange-50 ">{category.name}</span>
+              <span className="basis-1/3 text-orange-50 text-center sm:text-left">
                 {category.parent
                   ? typeof category.parent === 'string'
                     ? category.parent
                     : category.parent.name
                   : 'Нет родительской категории'}
               </span>
-              <div className="basis-1/3">
+              <div className="basis-1/3 flex flex-col sm:flex-row items-end gap-y-2">
                 <button className="edit__buttons" onClick={() => editCategory(category)}>
                   <PencilIcon />
-                  <span>Редактировать</span>
+                  <span className="hidden sm:block">Редактировать</span>
                 </button>
                 <button className="edit__buttons" onClick={() => deleteCategory(category)}>
                   <TrashIcon />
-                  <span>Удалить</span>
+                  <span className="hidden sm:block">Удалить</span>
                 </button>
               </div>
             </article>

@@ -36,11 +36,11 @@ function Places() {
               <div className="basis-1/3 flex items-center">
                 <Link className="edit__buttons" href={'/places/edit/' + place._id}>
                   <PencilIcon />
-                  <span>Редактировать</span>
+                  <span className="hidden sm:block">Редактировать</span>
                 </Link>
                 <Link className="edit__buttons" href={'/places/delete/' + place._id}>
                   <TrashIcon />
-                  <span>Удалить</span>
+                  <span className="hidden sm:block">Удалить</span>
                 </Link>
               </div>
             </article>
