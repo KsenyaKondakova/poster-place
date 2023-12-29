@@ -4,11 +4,13 @@ import { News } from '@/models/News';
 
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { isAdminAuth } from './auth/[...nextauth]';
 
 export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
+    await isAdminAuth(req, res);
     if (method === 'POST') {
       const { afishaInfo } = req.body;
       const parentId = new mongoose.Types.ObjectId();
