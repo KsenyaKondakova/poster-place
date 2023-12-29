@@ -2,11 +2,12 @@ import { mongooseConnect } from '@/lib/mongoose';
 import { Category } from '@/models/Category';
 import mongoose, { Types } from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { isAdminAuth } from './auth/[...nextauth]';
 export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
-
+    await isAdminAuth(req, res);
     if (method === 'POST') {
       const { categoryName, parentCategory } = req.body;
 
