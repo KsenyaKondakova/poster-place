@@ -52,7 +52,11 @@ function Categories() {
     setCategoryName(category.name);
   };
 
-  const deleteCategory = (category: ICategorList) => {};
+  const deleteCategoryFetch = async (category: number | string | null) => {
+    await axios.delete(`/api/categories?_id=${category}`);
+    fetchCategories();
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -134,7 +138,7 @@ function Categories() {
                   <PencilIcon />
                   <span className="hidden sm:block">Редактировать</span>
                 </button>
-                <button className="edit__buttons" onClick={() => deleteCategory(category)}>
+                <button className="edit__buttons" onClick={() => deleteCategoryFetch(category._id)}>
                   <TrashIcon />
                   <span className="hidden sm:block">Удалить</span>
                 </button>

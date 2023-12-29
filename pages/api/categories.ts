@@ -41,6 +41,7 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
     }
     if (method === 'DELETE') {
       const { _id } = req.query;
+      console.log('АЙДИ', _id);
       await Category.deleteOne({ _id });
       res.json('ок');
     }
