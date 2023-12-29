@@ -58,3 +58,15 @@ export interface IAfishaState {
 export interface NewAfishaForm {
   image: string;
 }
+export interface StarList {
+  _id: number | null;
+  name: string;
+  secondName: string;
+  description: string;
+  subdescription: string;
+  images?: string[];
+}
+export interface IStarState {
+  starList: StarList[];
+  starInfo: StarList;
+}
