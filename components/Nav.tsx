@@ -6,6 +6,7 @@ import LogoutIcon from '@/assets/icons/LogoutIcon';
 import MenuIcon from '@/assets/icons/MenuIcon';
 import NewsIcon from '@/assets/icons/NewsIcon';
 import SquaresIcon from '@/assets/icons/SquaresIcon';
+import StarIcon from '@/assets/icons/StarIcon';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { NextRouter, useRouter } from 'next/router';
@@ -86,6 +87,10 @@ function Nav({
             <BuildingIcon />
 
             <span>Заведения</span>
+          </Link>
+          <Link href={'/stars'} className={pathname === '/stars' ? activeLink : inactiveLink}>
+            <StarIcon />
+            <span>Звезды</span>
           </Link>
         </nav>{' '}
         <button className="flex items-center" onClick={() => signOut()}>
