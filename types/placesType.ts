@@ -70,3 +70,19 @@ export interface IStarState {
   starList: StarList[];
   starInfo: StarList;
 }
+
+export interface ISaleList {
+  _id: number | string | null;
+  amount: number;
+  date: string;
+}
+export interface ISaleState {
+  saleList: ISaleList[];
+  editedSale: ISaleList | string | null;
+  amount: number | null;
+  date: string | number | null;
+}
+export interface NewSaleForm {
+  amountForm: number;
+  dateForm: string;
+}
