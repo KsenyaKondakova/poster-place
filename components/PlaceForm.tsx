@@ -1,10 +1,9 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import Spinner from './Spinner';
+import { useEffect, useState, ChangeEvent } from 'react';
+import { useForm } from 'react-hook-form';
 import { NextRouter, useRouter } from 'next/router';
 import { IPlaceList, NewPlaceForm, NewsList } from '@/types/placesType';
-import { link } from 'fs';
-import Spinner from './Spinner';
 import { ReactSortable } from 'react-sortablejs';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCategories } from '@/redux/slices/categorySlice';
@@ -105,10 +104,6 @@ function PlaceForm({
       dispatch(setCategories(res.data));
     });
   }, []);
-  useEffect(() => {
-    console.log('афиша', afisha);
-    console.log('картинки', images);
-  }, [afisha, images]);
 
   return (
     <>

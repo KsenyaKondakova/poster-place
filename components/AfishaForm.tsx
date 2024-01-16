@@ -1,9 +1,9 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
+import Spinner from './Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { NextRouter, useRouter } from 'next/router';
-import Spinner from './Spinner';
 import { setAfishaImage, setAfishaInfo } from '@/redux/slices/afishaSlice';
 import { AfishaList, NewAfishaForm } from '@/types/placesType';
 import { useForm } from 'react-hook-form';

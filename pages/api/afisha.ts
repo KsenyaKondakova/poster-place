@@ -40,7 +40,6 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         const deleteAfisha = await Afisha.deleteOne({ _id: req.query?.id });
 
         if (deleteAfisha) {
-          console.log('удалено');
           res.json(true);
         } else {
           res.status(404).json({ error: 'Not delete' });
