@@ -14,7 +14,6 @@ export const authOptions = {
   callbacks: {
     session: ({ session, token, user }: any) => {
       if (adminEmails.includes(session?.user?.email)) {
-        console.log({ session, token, user });
         return session;
       } else {
         return false;
@@ -27,7 +26,6 @@ export default NextAuth(authOptions);
 
 export async function isAdminAuth(req: any, res: any) {
   const session = await getServerSession(req, res, authOptions);
-  console.log(session);
   if (!adminEmails.includes(session?.user?.email)) {
     throw new Error('not an admin');
   }

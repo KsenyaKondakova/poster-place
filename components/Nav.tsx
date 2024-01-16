@@ -1,4 +1,6 @@
+import React from 'react';
 import BuildingIcon from '@/assets/icons/BuildingIcon';
+import CardIcon from '@/assets/icons/Card';
 import ChatIcon from '@/assets/icons/ChatIcon';
 import ExitIcon from '@/assets/icons/ExitIcon';
 import ListIcon from '@/assets/icons/ListIcon';
@@ -7,10 +9,10 @@ import MenuIcon from '@/assets/icons/MenuIcon';
 import NewsIcon from '@/assets/icons/NewsIcon';
 import SquaresIcon from '@/assets/icons/SquaresIcon';
 import StarIcon from '@/assets/icons/StarIcon';
-import { signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import { NextRouter, useRouter } from 'next/router';
-import React from 'react';
+
 type NavProps = {
   displayMenuMobile: boolean;
   setDisplayMenuMobile: (value: boolean | ((prevMenu: boolean) => boolean)) => void;
@@ -91,6 +93,10 @@ function Nav({
           <Link href={'/stars'} className={pathname === '/stars' ? activeLink : inactiveLink}>
             <StarIcon />
             <span>Звезды</span>
+          </Link>
+          <Link href={'/sales'} className={pathname === '/sales' ? activeLink : inactiveLink}>
+            <CardIcon />
+            <span>Продажи</span>
           </Link>
         </nav>{' '}
         <button className="flex items-center" onClick={() => signOut()}>

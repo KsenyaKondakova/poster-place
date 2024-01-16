@@ -52,8 +52,6 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         { title: placeName, description: descriptionPlace, images, category, news, afisha },
         { new: true },
       );
-      console.log('картинки', images);
-      console.log('афиша', afisha);
       if (updatedPlace) {
         res.json(updatedPlace);
       } else {

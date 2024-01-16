@@ -1,6 +1,6 @@
-import { useSession, signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Nav from '@/components/Nav';
+import { useSession, signIn } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 type LayoutProps = {
   children: React.ReactNode;

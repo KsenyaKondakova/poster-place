@@ -1,21 +1,12 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
-import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import { NextRouter, useRouter } from 'next/router';
-import { IPlaceList, NewPlaceForm, NewsList, StarList } from '@/types/placesType';
-import { link } from 'fs';
 import Spinner from './Spinner';
+import { useState, ChangeEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { NextRouter, useRouter } from 'next/router';
+import { StarList } from '@/types/placesType';
 import { ReactSortable } from 'react-sortablejs';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCategories } from '@/redux/slices/categorySlice';
-import { RootState } from '@/redux/store';
-import {
-  addNews,
-  removeNews,
-  setPlaceInfo,
-  updateNewsName,
-  updateNewsText,
-} from '@/redux/slices/placeSlice';
+import { useDispatch } from 'react-redux';
+import { setPlaceInfo } from '@/redux/slices/placeSlice';
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
