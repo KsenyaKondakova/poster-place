@@ -81,6 +81,10 @@ export interface ISaleState {
   editedSale: ISaleList | string | null;
   amount: number | null;
   date: string | number | null;
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 export interface NewSaleForm {
   amountForm: number;
