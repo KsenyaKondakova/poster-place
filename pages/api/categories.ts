@@ -29,8 +29,18 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
       res.json(categoryDoc);
     }
     if (method === 'GET') {
-      const categories = await Category.find().populate('parent');
-      res.json(categories);
+      const { limit, offset } = req.query;
+      const totalItems = await Category.countDocuments();
+      const totalPages = Math.ceil(totalItems / Number(limit));
+      const categories = await Category.find()
+        .sort({ name: 1 })
+        .skip(Number(offset))
+        .limit(Number(limit))
+        .populate('parent');
+      const rootCategories = (await Category.find().populate('parent')).filter(
+        (category) => category.parent === null,
+      );
+      res.json({ categories, totalPages, rootCategories });
     }
     if (method === 'PUT') {
       const { categoryName, parentCategory, _id } = req.body;

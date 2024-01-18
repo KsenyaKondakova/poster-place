@@ -7,6 +7,10 @@ import mongoose from 'mongoose';
 const initialState: IPlaceState = {
   placeList: [],
   placeInfo: { _id: null, title: '', description: '', category: '', news: [] },
+  limit: 12,
+  offset: 0,
+  page: 0,
+  pageQty: 0,
 };
 
 export const placeSlice = createSlice({
@@ -47,11 +51,33 @@ export const placeSlice = createSlice({
       const { index } = action.payload;
       state.placeInfo.news = state.placeInfo.news.filter((_, indexEl) => index !== indexEl);
     },
+    setLimit: (state, action: PayloadAction<number>) => {
+      state.limit = action.payload;
+    },
+    setOffset: (state, action: PayloadAction<number>) => {
+      state.offset = action.payload;
+    },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
+    },
+    setPageQty: (state, action: PayloadAction<number>) => {
+      state.pageQty = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setPlaces, setPlaceInfo, addNews, updateNewsName, updateNewsText, removeNews } =
-  placeSlice.actions;
+export const {
+  setPlaces,
+  setPlaceInfo,
+  addNews,
+  updateNewsName,
+  updateNewsText,
+  removeNews,
+  setLimit,
+  setOffset,
+  setPage,
+  setPageQty,
+} = placeSlice.actions;
 
 export default placeSlice.reducer;

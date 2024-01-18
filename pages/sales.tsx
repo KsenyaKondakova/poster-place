@@ -1,6 +1,3 @@
-import AlertIcon from '@/assets/icons/AlertIcon';
-import PencilIcon from '@/assets/icons/PencilIcon';
-import TrashIcon from '@/assets/icons/TrashIcon';
 import Layout from '@/components/Layout';
 import { RootState } from '@/redux/store';
 import { ISaleList, NewSaleForm } from '@/types/placesType';
@@ -8,8 +5,20 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAmount, setDate, setEditedSale, setSales } from '@/redux/slices/saleSlice';
+import PencilIcon from '@/assets/icons/PencilIcon';
+import TrashIcon from '@/assets/icons/TrashIcon';
+import AlertIcon from '@/assets/icons/AlertIcon';
+import saleSlice, {
+  setAmount,
+  setDate,
+  setEditedSale,
+  setOffset,
+  setPage,
+  setPageQty,
+  setSales,
+} from '@/redux/slices/saleSlice';
 import AirDatepickerReact from '@/components/DatePicker';
+import PaginationComp from '@/components/Pagination';
 function Sales() {
   const {
     register,
@@ -22,9 +31,14 @@ function Sales() {
   const amount = useSelector((state: RootState) => state.saleSlice.amount);
   const date = useSelector((state: RootState) => state.saleSlice.date);
   const editedSale = useSelector((state: RootState) => state.saleSlice.editedSale);
+  const limit = useSelector((state: RootState) => state.saleSlice.limit);
+  const offset = useSelector((state: RootState) => state.saleSlice.offset);
+  const page = useSelector((state: RootState) => state.saleSlice.page);
+  const pageQty = useSelector((state: RootState) => state.saleSlice.pageQty);
   const fetchSales = () => {
-    axios.get('/api/sales').then((response) => {
-      dispatch(setSales(response.data));
+    axios.get(`/api/sales?limit=${limit}&offset=${offset}`).then((response) => {
+      dispatch(setSales(response.data.formatSale));
+      dispatch(setPageQty(response.data.totalPages));
     });
   };
   const saveSale = async () => {
@@ -55,7 +69,7 @@ function Sales() {
   }, [editedSale]);
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [page]);
   return (
     <Layout>
       <h1 className="text-2xl text-neutral-800">Продажи</h1>
@@ -112,9 +126,9 @@ function Sales() {
           <span className="basis-1/3">Инструменты</span>
         </div>
         <div className="flex flex-col">
-          {sales.map((sale) => (
+          {sales.map((sale: any) => (
             <article
-              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center "
+              className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center "
               key={sale._id}>
               <span className="basis-1/3 text-orange-50 ">{sale.amount}</span>
               <span className="basis-1/3 text-orange-50 text-center sm:text-left">{sale.date}</span>
@@ -132,6 +146,7 @@ function Sales() {
           ))}
         </div>
       </div>
+      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
     </Layout>
   );
 }

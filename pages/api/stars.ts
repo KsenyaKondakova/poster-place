@@ -34,8 +34,12 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
           res.status(404).json({ error: 'Place not found' });
         }
       } else {
-        const stars = await Star.find();
-        res.json(stars);
+        const { limit, offset } = req.query;
+        const totalItems = await Star.countDocuments();
+        const totalPages = Math.ceil(totalItems / Number(limit));
+        const stars = await Star.find().sort({ name: 1 }).skip(Number(offset)).limit(Number(limit));
+
+        res.json({ stars, totalPages });
       }
     }
 

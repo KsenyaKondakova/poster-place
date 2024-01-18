@@ -40,8 +40,15 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
           res.status(404).json({ error: 'Place not found' });
         }
       } else {
-        const places = await Place.find();
-        res.json(places);
+        const { limit, offset } = req.query;
+        const totalItems = await Place.countDocuments();
+        const totalPages = Math.ceil(totalItems / Number(limit));
+        const places = await Place.find()
+          .sort({ title: 1 })
+          .skip(Number(offset))
+          .limit(Number(limit));
+
+        res.json({ places, totalPages });
       }
     }
 

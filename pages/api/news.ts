@@ -30,8 +30,15 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
           res.status(404).json({ error: 'Place not found' });
         }
       } else {
-        const news = await News.find();
-        res.json(news);
+        const { limit, offset } = req.query;
+        const totalItems = await News.countDocuments();
+        const totalPages = Math.ceil(totalItems / Number(limit));
+        const news = await News.find()
+          .sort({ newsName: 1 })
+          .skip(Number(offset))
+          .limit(Number(limit));
+
+        res.json({ news, totalPages });
       }
     }
     if (method === 'PUT') {

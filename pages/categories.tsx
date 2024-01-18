@@ -2,7 +2,16 @@ import AlertIcon from '@/assets/icons/AlertIcon';
 import PencilIcon from '@/assets/icons/PencilIcon';
 import TrashIcon from '@/assets/icons/TrashIcon';
 import Layout from '@/components/Layout';
-import { setCategories, setEditedCategory, setParentCategory } from '@/redux/slices/categorySlice';
+import PaginationComp from '@/components/Pagination';
+import {
+  setCategories,
+  setEditedCategory,
+  setOffset,
+  setPage,
+  setPageQty,
+  setParentCategory,
+  setRootCategories,
+} from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
 import { ICategorList, NewCategoryForm } from '@/types/placesType';
 import axios from 'axios';
@@ -21,11 +30,18 @@ function Categories() {
   const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
   const parentCategory = useSelector((state: RootState) => state.categorySlice.parentCategory);
   const editedCategory = useSelector((state: RootState) => state.categorySlice.editedCategory);
+  const limit = useSelector((state: RootState) => state.categorySlice.limit);
+  const offset = useSelector((state: RootState) => state.categorySlice.offset);
+  const page = useSelector((state: RootState) => state.categorySlice.page);
+  const pageQty = useSelector((state: RootState) => state.categorySlice.pageQty);
+  const rootCategories = useSelector((state: RootState) => state.categorySlice.rootCategories);
   const [categoryName, setCategoryName] = useState('');
 
   const fetchCategories = () => {
-    axios.get('/api/categories').then((response) => {
-      dispatch(setCategories(response.data));
+    axios.get(`/api/categories?limit=${limit}&offset=${offset}`).then((response) => {
+      dispatch(setCategories(response.data.categories));
+      dispatch(setPageQty(response.data.totalPages));
+      dispatch(setRootCategories(response.data.rootCategories));
     });
   };
   const saveCategory = async () => {
@@ -59,7 +75,7 @@ function Categories() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+  }, [page]);
 
   return (
     <Layout>
@@ -94,8 +110,8 @@ function Categories() {
               }
               onChange={(ev) => dispatch(setParentCategory(ev.target.value))}>
               <option value="">Нет родительской категории</option>
-              {categories.length > 0 &&
-                categories.map((category) => (
+              {rootCategories.length > 0 &&
+                rootCategories.map((category) => (
                   <option key={category._id} value={category._id || ''}>
                     {category.name}
                   </option>
@@ -123,7 +139,7 @@ function Categories() {
         <div className="flex flex-col">
           {categories.map((category) => (
             <article
-              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center "
+              className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center "
               key={category._id}>
               <span className="basis-1/3 text-orange-50 ">{category.name}</span>
               <span className="basis-1/3 text-orange-50 text-center sm:text-left">
@@ -146,7 +162,8 @@ function Categories() {
             </article>
           ))}
         </div>
-      </div>
+      </div>{' '}
+      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
     </Layout>
   );
 }
