@@ -11,6 +11,11 @@ export interface IPlaceList {
 export interface IPlaceState {
   placeList: IPlaceList[];
   placeInfo: IPlaceList;
+
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 export interface ICategorList {
   _id: number | string | null;
@@ -21,6 +26,11 @@ export interface ICategoryState {
   categoryList: ICategorList[];
   parentCategory: ICategorList | string | null;
   editedCategory: ICategorList | null | string;
+  rootCategories: ICategorList[];
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 export interface NewsList {
   _id: number | string | null;
@@ -42,6 +52,10 @@ export interface NewCategoryForm {
 export interface INewsState {
   newsList: NewsList[];
   newsInfo: NewsList;
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 export interface NewNewsForm {
   newsName: string;
@@ -54,6 +68,10 @@ export interface AfishaList {
 export interface IAfishaState {
   afishaList: AfishaList[];
   afishaInfo: AfishaList;
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 export interface NewAfishaForm {
   image: string;
@@ -69,6 +87,10 @@ export interface StarList {
 export interface IStarState {
   starList: StarList[];
   starInfo: StarList;
+  limit: number;
+  offset: number;
+  page: number;
+  pageQty: number;
 }
 
 export interface ISaleList {

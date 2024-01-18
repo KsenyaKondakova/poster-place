@@ -12,6 +12,8 @@ import saleSlice, {
   setAmount,
   setDate,
   setEditedSale,
+  setOffset,
+  setPage,
   setPageQty,
   setSales,
 } from '@/redux/slices/saleSlice';
@@ -144,14 +146,7 @@ function Sales() {
           ))}
         </div>
       </div>
-      <PaginationComp
-        sales={sales}
-        editSale={editSale}
-        deleteSaleFetch={deleteSaleFetch}
-        page={page}
-        pageQty={pageQty}
-        limit={limit}
-      />
+      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
     </Layout>
   );
 }
