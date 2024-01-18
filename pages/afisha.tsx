@@ -5,24 +5,30 @@ import Link from 'next/link';
 import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAfisha } from '@/redux/slices/afishaSlice';
+import { setAfisha, setOffset, setPage, setPageQty } from '@/redux/slices/afishaSlice';
 import TrashIcon from '@/assets/icons/TrashIcon';
+import PaginationComp from '@/components/Pagination';
 
 function Afisha() {
   const dispatch = useDispatch();
   const afisha = useSelector((state: RootState) => state.afishaSlice.afishaList);
+  const limit = useSelector((state: RootState) => state.afishaSlice.limit);
+  const offset = useSelector((state: RootState) => state.afishaSlice.offset);
+  const page = useSelector((state: RootState) => state.afishaSlice.page);
+  const pageQty = useSelector((state: RootState) => state.afishaSlice.pageQty);
   useEffect(() => {
-    axios.get('/api/afisha').then((response) => {
-      dispatch(setAfisha(response.data));
+    axios.get(`/api/afisha?limit=${limit}&offset=${offset}`).then((response) => {
+      dispatch(setAfisha(response.data.afishas));
+      dispatch(setPageQty(response.data.totalPages));
     });
-  }, []);
+  }, [page]);
   return (
     <Layout>
       <Link href={'/afisha/new'} className="submit-btn">
         Добавить афишу
       </Link>
       <div className=" flex justify-center">
-        <div className="flex mt-4 flex-wrap gap-4 justify-center lg:justify-start">
+        <div className="flex w-full mt-4 flex-wrap gap-3 justify-center lg:justify-start">
           {afisha.map((afishaItem) => (
             <article
               key={afishaItem._id}
@@ -43,6 +49,7 @@ function Afisha() {
           ))}
         </div>
       </div>
+      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
     </Layout>
   );
 }

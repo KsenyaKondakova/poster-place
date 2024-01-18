@@ -30,8 +30,12 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
           res.status(404).json({ error: 'Place not found' });
         }
       } else {
-        const afishas = await Afisha.find();
-        res.json(afishas);
+        const { limit, offset } = req.query;
+        const totalItems = await Afisha.countDocuments();
+        const totalPages = Math.ceil(totalItems / Number(limit));
+        const afishas = await Afisha.find().skip(Number(offset)).limit(Number(limit));
+
+        res.json({ afishas, totalPages });
       }
     }
 
