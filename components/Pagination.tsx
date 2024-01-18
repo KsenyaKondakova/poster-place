@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { useDispatch } from 'react-redux';
-import { setOffset, setPage } from '@/redux/slices/saleSlice';
+
 import RightArrow from '@/assets/icons/RightArrow';
 import LeftArrow from '@/assets/icons/LeftArrow';
-function PaginationComp({ sales, editSale, deleteSaleFetch, page, pageQty, limit }: any) {
+function PaginationComp({ pageQty, limit, setOffset, setPage }: any) {
   const dispatch = useDispatch();
   const handlePageClick = (event: any) => {
     dispatch(setOffset(event.selected * limit));
