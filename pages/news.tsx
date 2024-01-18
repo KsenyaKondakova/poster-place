@@ -5,18 +5,24 @@ import Link from 'next/link';
 import React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setNews } from '../redux/slices/newsSlice';
+import { setNews, setOffset, setPage, setPageQty } from '../redux/slices/newsSlice';
 import PencilIcon from '@/assets/icons/PencilIcon';
 import TrashIcon from '@/assets/icons/TrashIcon';
+import PaginationComp from '@/components/Pagination';
 
 function News() {
   const dispatch = useDispatch();
   const news = useSelector((state: RootState) => state.newsSlice.newsList);
+  const limit = useSelector((state: RootState) => state.newsSlice.limit);
+  const offset = useSelector((state: RootState) => state.newsSlice.offset);
+  const page = useSelector((state: RootState) => state.newsSlice.page);
+  const pageQty = useSelector((state: RootState) => state.newsSlice.pageQty);
   useEffect(() => {
-    axios.get('/api/news').then((response) => {
-      dispatch(setNews(response.data));
+    axios.get(`/api/news?limit=${limit}&offset=${offset}`).then((response) => {
+      dispatch(setNews(response.data.news));
+      dispatch(setPageQty(response.data.totalPages));
     });
-  }, [dispatch]);
+  }, [page]);
   return (
     <Layout>
       <Link href={'/news/new'} className="submit-btn">
@@ -31,7 +37,7 @@ function News() {
           {news.map((newsItem) => (
             <article
               key={newsItem._id}
-              className="flex pt-4 pb-4 mx-4 border-b-2 border-gray-600 items-center">
+              className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center">
               <span className="basis-2/3 text-orange-50">{newsItem.newsName}</span>
               <div className="basis-1/3 flex items-center">
                 <Link className="edit__buttons" href={'/news/edit/' + newsItem._id}>
@@ -47,6 +53,7 @@ function News() {
           ))}
         </div>
       </div>
+      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
     </Layout>
   );
 }

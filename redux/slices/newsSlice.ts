@@ -4,6 +4,10 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 const initialState: INewsState = {
   newsList: [],
   newsInfo: { _id: null, newsName: '', newsText: '', parent: null },
+  limit: 12,
+  offset: 0,
+  page: 0,
+  pageQty: 0,
 };
 export const newsSlice = createSlice({
   name: 'news',
@@ -15,8 +19,20 @@ export const newsSlice = createSlice({
     setNewsInfo: (state, action: PayloadAction<NewsList>) => {
       state.newsInfo = action.payload;
     },
+    setLimit: (state, action: PayloadAction<number>) => {
+      state.limit = action.payload;
+    },
+    setOffset: (state, action: PayloadAction<number>) => {
+      state.offset = action.payload;
+    },
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
+    },
+    setPageQty: (state, action: PayloadAction<number>) => {
+      state.pageQty = action.payload;
+    },
   },
 });
 
-export const { setNews, setNewsInfo } = newsSlice.actions;
+export const { setNews, setNewsInfo, setLimit, setOffset, setPage, setPageQty } = newsSlice.actions;
 export default newsSlice.reducer;
