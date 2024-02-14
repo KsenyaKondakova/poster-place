@@ -1,13 +1,16 @@
-import Layout from '@/components/Layout';
-import { RootState } from '@/redux/store';
-import { ISaleList, NewSaleForm } from '@/types/placesType';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+
+import AlertIcon from '@/assets/icons/AlertIcon';
 import PencilIcon from '@/assets/icons/PencilIcon';
 import TrashIcon from '@/assets/icons/TrashIcon';
-import AlertIcon from '@/assets/icons/AlertIcon';
+
+import AirDatepickerReact from '@/components/DatePicker';
+import Layout from '@/components/Layout';
+import PaginationComp from '@/components/Pagination';
+
 import saleSlice, {
   setAmount,
   setDate,
@@ -17,8 +20,10 @@ import saleSlice, {
   setPageQty,
   setSales,
 } from '@/redux/slices/saleSlice';
-import AirDatepickerReact from '@/components/DatePicker';
-import PaginationComp from '@/components/Pagination';
+import { RootState } from '@/redux/store';
+
+import { ISaleList, NewSaleForm } from '@/types/placesType';
+
 function Sales() {
   const {
     register,
@@ -30,7 +35,9 @@ function Sales() {
   const sales = useSelector((state: RootState) => state.saleSlice.saleList);
   const amount = useSelector((state: RootState) => state.saleSlice.amount);
   const date = useSelector((state: RootState) => state.saleSlice.date);
-  const editedSale = useSelector((state: RootState) => state.saleSlice.editedSale);
+  const editedSale = useSelector(
+    (state: RootState) => state.saleSlice.editedSale,
+  );
   const limit = useSelector((state: RootState) => state.saleSlice.limit);
   const offset = useSelector((state: RootState) => state.saleSlice.offset);
   const page = useSelector((state: RootState) => state.saleSlice.page);
@@ -57,6 +64,9 @@ function Sales() {
   const editSale = (sale: ISaleList) => {
     dispatch(setEditedSale(sale));
   };
+  const handleSetDate = (date: string) => {
+    dispatch(setDate(date));
+  };
   const deleteSaleFetch = async (sale: number | string | null) => {
     await axios.delete(`/api/sales?_id=${sale}`);
     fetchSales();
@@ -70,6 +80,7 @@ function Sales() {
   useEffect(() => {
     fetchSales();
   }, [page]);
+
   return (
     <Layout>
       <h1 className="text-2xl text-neutral-800">Продажи</h1>
@@ -78,7 +89,8 @@ function Sales() {
           e.preventDefault();
           saveSale();
         }}
-        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl mt-2">
+        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl mt-2"
+      >
         <div className="flex flex-col gap-y-2">
           <div className="flex gap-x-4 items-end">
             <div className="flex flex-col flex-1 gap-y-2">
@@ -110,6 +122,7 @@ function Sales() {
                 placeholder="Выберите дату"
                 id="dateForm"
                 valueDate={String(date)}
+                setDate={handleSetDate}
               />
             </div>
 
@@ -129,15 +142,24 @@ function Sales() {
           {sales.map((sale: any) => (
             <article
               className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center "
-              key={sale._id}>
+              key={sale._id}
+            >
               <span className="basis-1/3 text-orange-50 ">{sale.amount}</span>
-              <span className="basis-1/3 text-orange-50 text-center sm:text-left">{sale.date}</span>
+              <span className="basis-1/3 text-orange-50 text-center sm:text-left">
+                {sale.date}
+              </span>
               <div className="basis-1/3 flex flex-col sm:flex-row items-end gap-y-2">
-                <button className="edit__buttons" onClick={() => editSale(sale)}>
+                <button
+                  className="edit__buttons"
+                  onClick={() => editSale(sale)}
+                >
                   <PencilIcon />
                   <span className="hidden sm:block">Редактировать</span>
                 </button>
-                <button className="edit__buttons" onClick={() => deleteSaleFetch(sale._id)}>
+                <button
+                  className="edit__buttons"
+                  onClick={() => deleteSaleFetch(sale._id)}
+                >
                   <TrashIcon />
                   <span className="hidden sm:block">Удалить</span>
                 </button>
@@ -146,7 +168,12 @@ function Sales() {
           ))}
         </div>
       </div>
-      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
+      <PaginationComp
+        pageQty={pageQty}
+        limit={limit}
+        setOffset={setOffset}
+        setPage={setPage}
+      />
     </Layout>
   );
 }
