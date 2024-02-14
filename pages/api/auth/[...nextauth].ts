@@ -1,7 +1,6 @@
 import NextAuth, { getServerSession } from 'next-auth';
 import YandexProvider from 'next-auth/providers/yandex';
-import { MongoDBAdapter } from '@auth/mongodb-adapter';
-import clientPromise from '../../../lib/mongodb';
+
 const adminEmails = ['ilisichckin@yandex.ru'];
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,

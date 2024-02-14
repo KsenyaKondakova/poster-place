@@ -1,5 +1,6 @@
+import mongoose, { model, models, Schema } from 'mongoose';
+
 import { NewsList } from '@/types/placesType';
-import mongoose, { Schema, model, models } from 'mongoose';
 
 interface IUser {
   title: string;
@@ -8,6 +9,7 @@ interface IUser {
   category?: IUser | mongoose.Types.ObjectId;
   news: NewsList[];
   afisha: string[];
+  dateImages: string;
 }
 const newsSchema = new Schema<NewsList>({
   _id: mongoose.Schema.Types.ObjectId,
@@ -22,6 +24,7 @@ const placeSchema = new Schema<IUser>({
   category: { type: mongoose.Types.ObjectId, ref: 'Category' },
   news: [newsSchema],
   afisha: [{ type: String }],
+  dateImages: { type: String },
 });
 
 export const Place = models?.Place || model('Place', placeSchema);

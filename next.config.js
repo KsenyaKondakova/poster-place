@@ -7,6 +7,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'avatars.yandex.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'place-images.hb.vkcs.cloud',
+      },
     ],
   },
 };

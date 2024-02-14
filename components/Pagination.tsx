@@ -2,8 +2,9 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { useDispatch } from 'react-redux';
 
-import RightArrow from '@/assets/icons/RightArrow';
 import LeftArrow from '@/assets/icons/LeftArrow';
+import RightArrow from '@/assets/icons/RightArrow';
+
 function PaginationComp({ pageQty, limit, setOffset, setPage }: any) {
   const dispatch = useDispatch();
   const handlePageClick = (event: any) => {

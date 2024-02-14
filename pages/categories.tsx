@@ -1,8 +1,15 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+
 import AlertIcon from '@/assets/icons/AlertIcon';
 import PencilIcon from '@/assets/icons/PencilIcon';
 import TrashIcon from '@/assets/icons/TrashIcon';
+
 import Layout from '@/components/Layout';
 import PaginationComp from '@/components/Pagination';
+
 import {
   setCategories,
   setEditedCategory,
@@ -13,11 +20,8 @@ import {
   setRootCategories,
 } from '@/redux/slices/categorySlice';
 import { RootState } from '@/redux/store';
+
 import { ICategorList, NewCategoryForm } from '@/types/placesType';
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
 
 function Categories() {
   const {
@@ -27,27 +31,40 @@ function Categories() {
     formState: { errors },
   } = useForm<NewCategoryForm>();
   const dispatch = useDispatch();
-  const categories = useSelector((state: RootState) => state.categorySlice.categoryList);
-  const parentCategory = useSelector((state: RootState) => state.categorySlice.parentCategory);
-  const editedCategory = useSelector((state: RootState) => state.categorySlice.editedCategory);
+  const categories = useSelector(
+    (state: RootState) => state.categorySlice.categoryList,
+  );
+  const parentCategory = useSelector(
+    (state: RootState) => state.categorySlice.parentCategory,
+  );
+  const editedCategory = useSelector(
+    (state: RootState) => state.categorySlice.editedCategory,
+  );
   const limit = useSelector((state: RootState) => state.categorySlice.limit);
   const offset = useSelector((state: RootState) => state.categorySlice.offset);
   const page = useSelector((state: RootState) => state.categorySlice.page);
-  const pageQty = useSelector((state: RootState) => state.categorySlice.pageQty);
-  const rootCategories = useSelector((state: RootState) => state.categorySlice.rootCategories);
+  const pageQty = useSelector(
+    (state: RootState) => state.categorySlice.pageQty,
+  );
+  const rootCategories = useSelector(
+    (state: RootState) => state.categorySlice.rootCategories,
+  );
   const [categoryName, setCategoryName] = useState('');
 
   const fetchCategories = () => {
-    axios.get(`/api/categories?limit=${limit}&offset=${offset}`).then((response) => {
-      dispatch(setCategories(response.data.categories));
-      dispatch(setPageQty(response.data.totalPages));
-      dispatch(setRootCategories(response.data.rootCategories));
-    });
+    axios
+      .get(`/api/categories?limit=${limit}&offset=${offset}`)
+      .then((response) => {
+        dispatch(setCategories(response.data.categories));
+        dispatch(setPageQty(response.data.totalPages));
+        dispatch(setRootCategories(response.data.rootCategories));
+      });
   };
   const saveCategory = async () => {
     const data = { categoryName, parentCategory };
     if (editedCategory) {
-      const idEditedCategory = typeof editedCategory === 'object' && editedCategory._id;
+      const idEditedCategory =
+        typeof editedCategory === 'object' && editedCategory._id;
       await axios.put('/api/categories', { ...data, _id: idEditedCategory });
       dispatch(setEditedCategory(null));
     } else {
@@ -82,7 +99,8 @@ function Categories() {
       <h1 className="text-2xl text-neutral-800">Категории</h1>
       <form
         onSubmit={handleSubmit(saveCategory)}
-        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl mt-2">
+        className="text-form flex flex-col gap-y-2 bg-nav-gray p-6 rounded-2xl mt-2"
+      >
         <label className="label-form" htmlFor="categoryname">
           {editedCategory && typeof editedCategory === 'object'
             ? `Редактировать категорию ${editedCategory.name}`
@@ -108,7 +126,8 @@ function Categories() {
                     : (parentCategory as string)
                   : ''
               }
-              onChange={(ev) => dispatch(setParentCategory(ev.target.value))}>
+              onChange={(ev) => dispatch(setParentCategory(ev.target.value))}
+            >
               <option value="">Нет родительской категории</option>
               {rootCategories.length > 0 &&
                 rootCategories.map((category) => (
@@ -140,7 +159,8 @@ function Categories() {
           {categories.map((category) => (
             <article
               className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center "
-              key={category._id}>
+              key={category._id}
+            >
               <span className="basis-1/3 text-orange-50 ">{category.name}</span>
               <span className="basis-1/3 text-orange-50 text-center sm:text-left">
                 {category.parent
@@ -150,11 +170,17 @@ function Categories() {
                   : 'Нет родительской категории'}
               </span>
               <div className="basis-1/3 flex flex-col sm:flex-row items-end gap-y-2">
-                <button className="edit__buttons" onClick={() => editCategory(category)}>
+                <button
+                  className="edit__buttons"
+                  onClick={() => editCategory(category)}
+                >
                   <PencilIcon />
                   <span className="hidden sm:block">Редактировать</span>
                 </button>
-                <button className="edit__buttons" onClick={() => deleteCategoryFetch(category._id)}>
+                <button
+                  className="edit__buttons"
+                  onClick={() => deleteCategoryFetch(category._id)}
+                >
                   <TrashIcon />
                   <span className="hidden sm:block">Удалить</span>
                 </button>
@@ -163,7 +189,12 @@ function Categories() {
           ))}
         </div>
       </div>{' '}
-      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
+      <PaginationComp
+        pageQty={pageQty}
+        limit={limit}
+        setOffset={setOffset}
+        setPage={setPage}
+      />
     </Layout>
   );
 }

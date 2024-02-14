@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+
 import Layout from '@/components/Layout';
 
 function Home() {
@@ -12,7 +13,9 @@ function Home() {
         <div className="flex justify-center items-center gap-2 p-2 px-4 rounded-full border-2 border-nav-gray">
           <Image
             className="rounded-full"
-            src={session?.user?.image ? session?.user?.image : '/islands-200.png'}
+            src={
+              session?.user?.image ? session?.user?.image : '/islands-200.png'
+            }
             width={30}
             height={30}
             alt="Picture of the author"

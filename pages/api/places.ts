@@ -1,16 +1,29 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { Place } from '@/models/Place';
+import { convertDatesToISO, convertISOToCustomFormat } from '@/utils/date';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { isAdminAuth } from './auth/[...nextauth]';
 
-export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function apiHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
     await isAdminAuth(req, res);
     if (method === 'POST') {
-      const { placeName, descriptionPlace, images, category, news, afisha } = req.body;
+      const {
+        placeName,
+        descriptionPlace,
+        images,
+        category,
+        news,
+        afisha,
+        dateImages,
+      } = req.body;
 
       const parentId = new mongoose.Types.ObjectId();
 
@@ -27,14 +40,19 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         afisha,
         category,
         news: newsWithParent,
+        dateImages: convertDatesToISO(dateImages),
       });
       res.json(placeDoc);
     }
 
     if (method === 'GET') {
       if (req.query?.id) {
-        const place = await Place.findOne({ _id: req.query.id });
-        if (place) {
+        const placeGet = await Place.findOne({ _id: req.query.id });
+        if (placeGet) {
+          const place = {
+            ...placeGet._doc,
+            dateImages: convertISOToCustomFormat(placeGet.dateImages),
+          };
           res.json(place);
         } else {
           res.status(404).json({ error: 'Place not found' });
@@ -43,20 +61,40 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         const { limit, offset } = req.query;
         const totalItems = await Place.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
-        const places = await Place.find()
+        const placesGet = await Place.find()
           .sort({ title: 1 })
           .skip(Number(offset))
           .limit(Number(limit));
-
+        const places = placesGet.map((place) => ({
+          ...place._doc,
+          dateImages: convertISOToCustomFormat(place.dateImages),
+        }));
         res.json({ places, totalPages });
       }
     }
 
     if (method === 'PUT') {
-      const { placeName, descriptionPlace, images, afisha, category, news, _id } = req.body;
+      const {
+        dateImages,
+        placeName,
+        descriptionPlace,
+        images,
+        afisha,
+        category,
+        news,
+        _id,
+      } = req.body;
       const updatedPlace = await Place.findOneAndUpdate(
         { _id },
-        { title: placeName, description: descriptionPlace, images, category, news, afisha },
+        {
+          title: placeName,
+          description: descriptionPlace,
+          images,
+          category,
+          news,
+          afisha,
+          dateImages: convertDatesToISO(dateImages),
+        },
         { new: true },
       );
       if (updatedPlace) {

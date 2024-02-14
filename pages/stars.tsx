@@ -1,14 +1,21 @@
-import PencilIcon from '@/assets/icons/PencilIcon';
-import TrashIcon from '@/assets/icons/TrashIcon';
-import Layout from '@/components/Layout';
-import PaginationComp from '@/components/Pagination';
-import { setOffset, setPage, setPageQty, setStars } from '@/redux/slices/starSclice';
-import { RootState } from '@/redux/store';
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import PencilIcon from '@/assets/icons/PencilIcon';
+import TrashIcon from '@/assets/icons/TrashIcon';
+
+import Layout from '@/components/Layout';
+import PaginationComp from '@/components/Pagination';
+
+import {
+  setOffset,
+  setPage,
+  setPageQty,
+  setStars,
+} from '@/redux/slices/starSclice';
+import { RootState } from '@/redux/store';
 
 function Stars() {
   const dispatch = useDispatch();
@@ -37,14 +44,21 @@ function Stars() {
           {stars.map((star) => (
             <article
               className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center"
-              key={star._id}>
+              key={star._id}
+            >
               <span className="basis-2/3 text-orange-50">{star.name}</span>
               <div className="basis-1/3 flex items-center">
-                <Link className="edit__buttons" href={'/stars/edit/' + star._id}>
+                <Link
+                  className="edit__buttons"
+                  href={'/stars/edit/' + star._id}
+                >
                   <PencilIcon />
                   <span className="hidden sm:block">Редактировать</span>
                 </Link>
-                <Link className="edit__buttons" href={'/stars/delete/' + star._id}>
+                <Link
+                  className="edit__buttons"
+                  href={'/stars/delete/' + star._id}
+                >
                   <TrashIcon />
                   <span className="hidden sm:block">Удалить</span>
                 </Link>
@@ -53,7 +67,12 @@ function Stars() {
           ))}
         </div>
       </div>
-      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
+      <PaginationComp
+        pageQty={pageQty}
+        limit={limit}
+        setOffset={setOffset}
+        setPage={setPage}
+      />
     </Layout>
   );
 }

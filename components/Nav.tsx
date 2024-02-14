@@ -1,4 +1,8 @@
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { NextRouter, useRouter } from 'next/router';
 import React from 'react';
+
 import BuildingIcon from '@/assets/icons/BuildingIcon';
 import CardIcon from '@/assets/icons/Card';
 import ChatIcon from '@/assets/icons/ChatIcon';
@@ -9,15 +13,16 @@ import MenuIcon from '@/assets/icons/MenuIcon';
 import NewsIcon from '@/assets/icons/NewsIcon';
 import SquaresIcon from '@/assets/icons/SquaresIcon';
 import StarIcon from '@/assets/icons/StarIcon';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { NextRouter, useRouter } from 'next/router';
 
 type NavProps = {
   displayMenuMobile: boolean;
-  setDisplayMenuMobile: (value: boolean | ((prevMenu: boolean) => boolean)) => void;
+  setDisplayMenuMobile: (
+    value: boolean | ((prevMenu: boolean) => boolean),
+  ) => void;
   displayContent: boolean;
-  setDisplayContent: (value: boolean | ((prevContent: boolean) => boolean)) => void;
+  setDisplayContent: (
+    value: boolean | ((prevContent: boolean) => boolean),
+  ) => void;
 };
 function Nav({
   displayMenuMobile,
@@ -44,7 +49,8 @@ function Nav({
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="#fff7ed"
-            className="w-7 h-7">
+            className="w-7 h-7"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -65,36 +71,57 @@ function Nav({
         )}
       </div>
 
-      <div className={`flex flex-col gap-4 text-orange-50  ${!displayMenuMobile ? 'hidden' : ''}`}>
+      <div
+        className={`flex flex-col gap-4 text-orange-50  ${!displayMenuMobile ? 'hidden' : ''}`}
+      >
         <nav className="flex flex-col gap-5">
-          <Link href={'/'} className={pathname === '/' ? activeLink : inactiveLink}>
+          <Link
+            href={'/'}
+            className={pathname === '/' ? activeLink : inactiveLink}
+          >
             <SquaresIcon />
             <span>Панель мониторинга</span>
           </Link>
-          <Link href={'/news'} className={pathname === '/news' ? activeLink : inactiveLink}>
+          <Link
+            href={'/news'}
+            className={pathname === '/news' ? activeLink : inactiveLink}
+          >
             <NewsIcon />
             <span>Новости</span>
           </Link>
-          <Link href={'/afisha'} className={pathname === '/afisha' ? activeLink : inactiveLink}>
+          <Link
+            href={'/afisha'}
+            className={pathname === '/afisha' ? activeLink : inactiveLink}
+          >
             <ChatIcon />
             <span>Афиша</span>
           </Link>
           <Link
             href={'/categories'}
-            className={pathname === '/categories' ? activeLink : inactiveLink}>
+            className={pathname === '/categories' ? activeLink : inactiveLink}
+          >
             <ListIcon />
             <span>Категории</span>
           </Link>
-          <Link href={'/places'} className={pathname === '/places' ? activeLink : inactiveLink}>
+          <Link
+            href={'/places'}
+            className={pathname === '/places' ? activeLink : inactiveLink}
+          >
             <BuildingIcon />
 
             <span>Заведения</span>
           </Link>
-          <Link href={'/stars'} className={pathname === '/stars' ? activeLink : inactiveLink}>
+          <Link
+            href={'/stars'}
+            className={pathname === '/stars' ? activeLink : inactiveLink}
+          >
             <StarIcon />
             <span>Звезды</span>
           </Link>
-          <Link href={'/sales'} className={pathname === '/sales' ? activeLink : inactiveLink}>
+          <Link
+            href={'/sales'}
+            className={pathname === '/sales' ? activeLink : inactiveLink}
+          >
             <CardIcon />
             <span>Продажи</span>
           </Link>

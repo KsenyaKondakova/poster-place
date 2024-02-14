@@ -1,7 +1,8 @@
-import multiparty from 'multiparty';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
+
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import multiparty from 'multiparty';
 
 const bucketName = 'place-images';
 
