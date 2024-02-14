@@ -1,11 +1,14 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { News } from '@/models/News';
-
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { isAdminAuth } from './auth/[...nextauth]';
 
-export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function apiHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
@@ -30,11 +33,12 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
           res.status(404).json({ error: 'Place not found' });
         }
       } else {
-        const { limit, offset } = req.query;
+        const { limit, offset, sort } = req.query;
         const totalItems = await News.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
+        const sortQuery: any = { newsName: Number(sort) };
         const news = await News.find()
-          .sort({ newsName: 1 })
+          .sort(sortQuery)
           .skip(Number(offset))
           .limit(Number(limit));
 

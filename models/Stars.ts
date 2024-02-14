@@ -1,4 +1,5 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import mongoose, { model, models, Schema } from 'mongoose';
+
 import { StarList } from '../types/placesType';
 
 const starSchema = new Schema<StarList>({

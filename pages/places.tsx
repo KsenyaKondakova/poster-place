@@ -1,14 +1,22 @@
-import PencilIcon from '@/assets/icons/PencilIcon';
-import TrashIcon from '@/assets/icons/TrashIcon';
-import Layout from '@/components/Layout';
-import PaginationComp from '@/components/Pagination';
-import { setOffset, setPage, setPageQty, setPlaces } from '@/redux/slices/placeSlice';
-import { RootState } from '@/redux/store';
 import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
+import PencilIcon from '@/assets/icons/PencilIcon';
+import TrashIcon from '@/assets/icons/TrashIcon';
+
+import Layout from '@/components/Layout';
+import PaginationComp from '@/components/Pagination';
+
+import { setCategories } from '@/redux/slices/categorySlice';
+import {
+  setOffset,
+  setPage,
+  setPageQty,
+  setPlaces,
+} from '@/redux/slices/placeSlice';
+import { RootState } from '@/redux/store';
 
 function Places() {
   const dispatch = useDispatch();
@@ -18,11 +26,18 @@ function Places() {
   const page = useSelector((state: RootState) => state.placeSlice.page);
   const pageQty = useSelector((state: RootState) => state.placeSlice.pageQty);
   useEffect(() => {
-    axios.get(`/api/places?limit=${limit}&offset=${offset}`).then((response) => {
-      dispatch(setPlaces(response.data.places));
-      dispatch(setPageQty(response.data.totalPages));
-    });
+    axios
+      .get(`/api/places?limit=${limit}&offset=${offset}`)
+      .then((response) => {
+        dispatch(setPlaces(response.data.places));
+        dispatch(setPageQty(response.data.totalPages));
+      });
   }, [page]);
+  useEffect(() => {
+    axios.get('/api/categories').then((res) => {
+      dispatch(setCategories(res.data));
+    });
+  }, []);
   return (
     <Layout>
       <Link href={'/places/new'} className="submit-btn">
@@ -37,14 +52,21 @@ function Places() {
           {places.map((place) => (
             <article
               className="flex pt-3 pb-3 mx-4 border-b-2 border-gray-600 items-center"
-              key={place._id}>
+              key={place._id}
+            >
               <span className="basis-2/3 text-orange-50">{place.title}</span>
               <div className="basis-1/3 flex items-center">
-                <Link className="edit__buttons" href={'/places/edit/' + place._id}>
+                <Link
+                  className="edit__buttons"
+                  href={'/places/edit/' + place._id}
+                >
                   <PencilIcon />
                   <span className="hidden sm:block">Редактировать</span>
                 </Link>
-                <Link className="edit__buttons" href={'/places/delete/' + place._id}>
+                <Link
+                  className="edit__buttons"
+                  href={'/places/delete/' + place._id}
+                >
                   <TrashIcon />
                   <span className="hidden sm:block">Удалить</span>
                 </Link>
@@ -53,7 +75,12 @@ function Places() {
           ))}
         </div>
       </div>
-      <PaginationComp pageQty={pageQty} limit={limit} setOffset={setOffset} setPage={setPage} />
+      <PaginationComp
+        pageQty={pageQty}
+        limit={limit}
+        setOffset={setOffset}
+        setPage={setPage}
+      />
     </Layout>
   );
 }

@@ -1,12 +1,13 @@
 import axios from 'axios';
-import Spinner from './Spinner';
-import { useState, ChangeEvent } from 'react';
-import { useForm } from 'react-hook-form';
 import { NextRouter, useRouter } from 'next/router';
-import { StarList } from '@/types/placesType';
+import { ChangeEvent, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { ReactSortable } from 'react-sortablejs';
-import { useDispatch } from 'react-redux';
-import { setPlaceInfo } from '@/redux/slices/placeSlice';
+
+import { StarList } from '@/types/placesType';
+
+import Spinner from './Spinner';
+
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
@@ -19,10 +20,11 @@ function StarsForm({
   subdescription: existingSubdescription,
   images: existingImages,
 }: StarList) {
-  const dispatch = useDispatch();
   const router: NextRouter = useRouter();
   const [goToStars, setGoToStars] = useState<boolean>(false);
-  const [images, setImages] = useState<string[]>(existingImages || ([] as string[]));
+  const [images, setImages] = useState<string[]>(
+    existingImages || ([] as string[]),
+  );
   const [isUplouding, setIsUploading] = useState<boolean>(false);
   const {
     register,
@@ -39,8 +41,6 @@ function StarsForm({
     }
     setGoToStars(true);
     setImages([]);
-
-    dispatch(setPlaceInfo({ _id: null, title: '', description: '', category: '', news: [] }));
   };
   if (goToStars) {
     router.push('/stars');
@@ -93,7 +93,8 @@ function StarsForm({
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6">
+                className="w-6 h-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -120,7 +121,8 @@ function StarsForm({
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6">
+                className="w-6 h-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -135,14 +137,21 @@ function StarsForm({
           <label className="label-form">Фото</label>
           <div className="mb-4 flex flex-wrap gap-2">
             <ReactSortable
-              list={images.map((link, index) => ({ id: index.toString(), link }))}
-              setList={(newState) => updateImagesOrder(newState.map((item) => item.link))}
-              className="flex flex-wrap gap-2">
+              list={images.map((link, index) => ({
+                id: index.toString(),
+                link,
+              }))}
+              setList={(newState) =>
+                updateImagesOrder(newState.map((item) => item.link))
+              }
+              className="flex flex-wrap gap-2"
+            >
               {!!images?.length &&
                 images.map((link) => (
                   <div
                     key={link}
-                    className="h-36 w-36 overflow-hidden flex items-center justify-center">
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center"
+                  >
                     <img src={link} className="w-auto h-full" />
                   </div>
                 ))}
@@ -160,8 +169,13 @@ function StarsForm({
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-8 h-8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                className="w-8 h-8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
               </svg>
               <span>Добавить фото</span>
               <input type="file" className="hidden" onChange={uploadImages} />
@@ -192,7 +206,8 @@ function StarsForm({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6">
+                  className="w-6 h-6"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -227,7 +242,8 @@ function StarsForm({
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-6 h-6">
+                  className="w-6 h-6"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

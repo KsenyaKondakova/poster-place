@@ -1,12 +1,14 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { Afisha } from '@/models/Afisha';
-import { News } from '@/models/News';
-
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { isAdminAuth } from './auth/[...nextauth]';
 
-export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function apiHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
@@ -33,7 +35,9 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         const { limit, offset } = req.query;
         const totalItems = await Afisha.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
-        const afishas = await Afisha.find().skip(Number(offset)).limit(Number(limit));
+        const afishas = await Afisha.find()
+          .skip(Number(offset))
+          .limit(Number(limit));
 
         res.json({ afishas, totalPages });
       }

@@ -8,6 +8,7 @@ const initialState: INewsState = {
   offset: 0,
   page: 0,
   pageQty: 0,
+  sortType: 1,
 };
 export const newsSlice = createSlice({
   name: 'news',
@@ -31,8 +32,12 @@ export const newsSlice = createSlice({
     setPageQty: (state, action: PayloadAction<number>) => {
       state.pageQty = action.payload;
     },
+    setSortType: (state, action: PayloadAction<number>) => {
+      state.sortType = action.payload;
+    },
   },
 });
 
-export const { setNews, setNewsInfo, setLimit, setOffset, setPage, setPageQty } = newsSlice.actions;
+export const { setNews, setNewsInfo, setLimit, setOffset, setPage, setPageQty, setSortType } =
+  newsSlice.actions;
 export default newsSlice.reducer;

@@ -1,19 +1,24 @@
 import axios from 'axios';
-import { setNewsInfo } from '@/redux/slices/newsSlice';
-import { NewNewsForm, NewsList } from '@/types/placesType';
 import { NextRouter, useRouter } from 'next/router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
-function NewsForm({ _id, newsName: existingNewsName, newsText: existingNewsText }: NewsList) {
+import { setNewsInfo } from '@/redux/slices/newsSlice';
+
+import { NewNewsForm, NewsList } from '@/types/placesType';
+
+function NewsForm({
+  _id,
+  newsName: existingNewsName,
+  newsText: existingNewsText,
+}: NewsList) {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
   const [goToNews, setGoToNews] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<NewNewsForm>();
 
@@ -24,7 +29,9 @@ function NewsForm({ _id, newsName: existingNewsName, newsText: existingNewsText 
       await axios.post('/api/news', { ...data });
     }
     setGoToNews(true);
-    dispatch(setNewsInfo({ _id: null, newsName: '', newsText: '', parent: null }));
+    dispatch(
+      setNewsInfo({ _id: null, newsName: '', newsText: '', parent: null }),
+    );
   };
   if (goToNews) {
     router.push('/news');
@@ -49,7 +56,8 @@ function NewsForm({ _id, newsName: existingNewsName, newsText: existingNewsText 
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6">
+              className="w-6 h-6"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -78,7 +86,8 @@ function NewsForm({ _id, newsName: existingNewsName, newsText: existingNewsText 
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6">
+              className="w-6 h-6"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

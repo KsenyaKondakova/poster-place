@@ -1,17 +1,21 @@
 import { mongooseConnect } from '@/lib/mongoose';
-import { Place } from '@/models/Place';
+import { Star } from '@/models/Stars';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { isAdminAuth } from './auth/[...nextauth]';
-import { Star } from '@/models/Stars';
 
-export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
+import { isAdminAuth } from './auth/[...nextauth]';
+
+export default async function apiHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const method: string | undefined = req.method;
     await mongooseConnect();
     await isAdminAuth(req, res);
     if (method === 'POST') {
-      const { name, secondName, description, subdescription, images } = req.body;
+      const { name, secondName, description, subdescription, images } =
+        req.body;
       const parentId = new mongoose.Types.ObjectId();
 
       const starDoc = await Star.create({
@@ -37,14 +41,18 @@ export default async function apiHandler(req: NextApiRequest, res: NextApiRespon
         const { limit, offset } = req.query;
         const totalItems = await Star.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
-        const stars = await Star.find().sort({ name: 1 }).skip(Number(offset)).limit(Number(limit));
+        const stars = await Star.find()
+          .sort({ name: 1 })
+          .skip(Number(offset))
+          .limit(Number(limit));
 
         res.json({ stars, totalPages });
       }
     }
 
     if (method === 'PUT') {
-      const { name, secondName, description, subdescription, images, _id } = req.body;
+      const { name, secondName, description, subdescription, images, _id } =
+        req.body;
       const updatedStar = await Star.findOneAndUpdate(
         { _id },
         { name, secondName, description, subdescription, images },
