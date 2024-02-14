@@ -6,6 +6,7 @@ export interface IPlaceList {
   category: string;
   news: NewsList[];
   afisha?: string[];
+  dateImages: string;
 }
 
 export interface IPlaceState {
@@ -44,6 +45,7 @@ export interface NewPlaceForm {
   images: string[];
   category: string;
   news: NewsList[];
+  dateImages: string;
 }
 export interface NewCategoryForm {
   categoryName: string;
@@ -56,6 +58,7 @@ export interface INewsState {
   offset: number;
   page: number;
   pageQty: number;
+  sortType: number;
 }
 export interface NewNewsForm {
   newsName: string;

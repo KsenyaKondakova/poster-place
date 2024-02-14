@@ -1,12 +1,21 @@
-import { IPlaceList, IPlaceState } from '@/types/placesType';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { NewsList } from '../../types/placesType';
 import mongoose from 'mongoose';
+
+import { IPlaceList, IPlaceState } from '@/types/placesType';
+
+import { NewsList } from '../../types/placesType';
 
 const initialState: IPlaceState = {
   placeList: [],
-  placeInfo: { _id: null, title: '', description: '', category: '', news: [] },
+  placeInfo: {
+    _id: null,
+    title: '',
+    description: '',
+    category: '',
+    news: [],
+    dateImages: '',
+  },
   limit: 12,
   offset: 0,
   page: 0,
@@ -30,26 +39,41 @@ export const placeSlice = createSlice({
 
       state.placeInfo.news = [
         ...state.placeInfo.news,
-        { _id: newNewsId.toString(), newsName: '', newsText: '', parent: parentId },
+        {
+          _id: newNewsId.toString(),
+          newsName: '',
+          newsText: '',
+          parent: parentId,
+        },
       ];
     },
     updateNewsName: (
       state,
-      action: PayloadAction<{ index: number; newsItem: NewsList; newName: string }>,
+      action: PayloadAction<{
+        index: number;
+        newsItem: NewsList;
+        newName: string;
+      }>,
     ) => {
       const { index, newsItem, newName } = action.payload;
       state.placeInfo.news[index].newsName = newName;
     },
     updateNewsText: (
       state,
-      action: PayloadAction<{ index: number; newsItem: NewsList; newText: string }>,
+      action: PayloadAction<{
+        index: number;
+        newsItem: NewsList;
+        newText: string;
+      }>,
     ) => {
       const { index, newsItem, newText } = action.payload;
       state.placeInfo.news[index].newsText = newText;
     },
     removeNews: (state, action: PayloadAction<{ index: number }>) => {
       const { index } = action.payload;
-      state.placeInfo.news = state.placeInfo.news.filter((_, indexEl) => index !== indexEl);
+      state.placeInfo.news = state.placeInfo.news.filter(
+        (_, indexEl) => index !== indexEl,
+      );
     },
     setLimit: (state, action: PayloadAction<number>) => {
       state.limit = action.payload;
