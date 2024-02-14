@@ -1,26 +1,31 @@
-import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
-import Spinner from './Spinner';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import Image from 'next/image';
 import { NextRouter, useRouter } from 'next/router';
-import { setAfishaImage, setAfishaInfo } from '@/redux/slices/afishaSlice';
-import { AfishaList, NewAfishaForm } from '@/types/placesType';
+import React, { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setAfishaImage, setAfishaInfo } from '@/redux/slices/afishaSlice';
+import { RootState } from '@/redux/store';
+
+import { AfishaList, NewAfishaForm } from '@/types/placesType';
+
+import Spinner from './Spinner';
 
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
-function AfishaForm({ _id, image: existingImage }: AfishaList) {
+function AfishaForm({ _id }: AfishaList) {
   const dispatch = useDispatch();
-  const afishaInfo = useSelector((state: RootState) => state.afishaSlice.afishaInfo);
+  const afishaInfo = useSelector(
+    (state: RootState) => state.afishaSlice.afishaInfo,
+  );
   const router: NextRouter = useRouter();
   const [goToAfisha, setGoToAfisha] = useState<boolean>(false);
   const [isUplouding, setIsUploading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<NewAfishaForm>();
   const uploadImagesOrAfisha = async (
@@ -49,7 +54,6 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
       await axios.post('/api/afisha', { afishaInfo });
     }
     setGoToAfisha(true);
-
     dispatch(setAfishaInfo({ _id: null, image: '' }));
   };
   if (goToAfisha) {
@@ -62,7 +66,13 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
         <div className="mb-4 flex flex-col gap-2 justify-center items-center">
           {afishaInfo.image && (
             <div className=" overflow-hidden flex items-center justify-center">
-              <img src={afishaInfo.image} className="w-auto h-full" />
+              <Image
+                width={600}
+                height={600}
+                src={afishaInfo.image}
+                className="w-auto h-full"
+                alt="afisha"
+              />
             </div>
           )}
           {isUplouding && (
@@ -78,8 +88,13 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-8 h-8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                className="w-8 h-8"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
               </svg>
               <span>Добавить фото</span>
               <input
@@ -98,7 +113,8 @@ function AfishaForm({ _id, image: existingImage }: AfishaList) {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6">
+                className="w-6 h-6"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
