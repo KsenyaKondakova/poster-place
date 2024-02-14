@@ -75,12 +75,14 @@ function Places() {
           ))}
         </div>
       </div>
-      <PaginationComp
-        pageQty={pageQty}
-        limit={limit}
-        setOffset={setOffset}
-        setPage={setPage}
-      />
+      {pageQty && (
+        <PaginationComp
+          pageQty={pageQty}
+          limit={limit}
+          setOffset={setOffset}
+          setPage={setPage}
+        />
+      )}
     </Layout>
   );
 }
