@@ -1,6 +1,6 @@
-import React from 'react';
+import type { FC } from 'react';
 
-const NewsIcon: React.FC = () => (
+const NewsIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
