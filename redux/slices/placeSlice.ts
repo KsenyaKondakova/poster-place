@@ -44,6 +44,7 @@ export const placeSlice = createSlice({
           newsName: '',
           newsText: '',
           parent: parentId,
+          date: '',
         },
       ];
     },
@@ -68,6 +69,17 @@ export const placeSlice = createSlice({
     ) => {
       const { index, newsItem, newText } = action.payload;
       state.placeInfo.news[index].newsText = newText;
+    },
+    updateNewsDate: (
+      state,
+      action: PayloadAction<{
+        index: number;
+        newsItem: NewsList;
+        newDate: string;
+      }>,
+    ) => {
+      const { index, newsItem, newDate } = action.payload;
+      state.placeInfo.news[index].date = newDate;
     },
     removeNews: (state, action: PayloadAction<{ index: number }>) => {
       const { index } = action.payload;
@@ -97,6 +109,7 @@ export const {
   addNews,
   updateNewsName,
   updateNewsText,
+  updateNewsDate,
   removeNews,
   setLimit,
   setOffset,

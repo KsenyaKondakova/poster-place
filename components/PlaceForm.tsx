@@ -1,15 +1,15 @@
 import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, use, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { ReactSortable } from 'react-sortablejs';
 
 import { setCategories } from '@/redux/slices/categorySlice';
 import {
   addNews,
   removeNews,
   setPlaceInfo,
+  updateNewsDate,
   updateNewsName,
   updateNewsText,
 } from '@/redux/slices/placeSlice';
@@ -33,6 +33,7 @@ function PlaceForm({
   news: existingNews,
   afisha: existingAfisha,
   dateImages: existingDate,
+  logo: existingLogo,
 }: IPlaceList) {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
@@ -46,12 +47,15 @@ function PlaceForm({
   const [images, setImages] = useState<string[]>(
     existingImages || ([] as string[]),
   );
+  const [logo, setLogo] = useState<string[]>(existingLogo || ([] as string[]));
   const [dateImages, setDateImages] = useState<string>(existingDate || '');
   const [afisha, setAfisha] = useState<string[]>(
     existingAfisha || ([] as string[]),
   );
+
   const [isUplouding, setIsUploading] = useState<boolean>(false);
   const [isUploudingAfisha, setIsUploadingAfisha] = useState<boolean>(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState<boolean>(false);
   const [categoriesLoaded, setCategoriesLoaded] = useState<boolean>(false);
   const {
     register,
@@ -65,6 +69,7 @@ function PlaceForm({
       await axios.put('/api/places', {
         ...data,
         images,
+        logo,
         dateImages,
         afisha,
         news: placeInfo.news,
@@ -75,6 +80,7 @@ function PlaceForm({
         ...data,
         images,
         afisha,
+        logo,
         dateImages,
         news: placeInfo.news,
       });
@@ -122,8 +128,15 @@ function PlaceForm({
   const uploadAfisha = (ev: IUploadImagesEvent) => {
     uploadImagesOrAfisha(ev, setAfisha, setIsUploadingAfisha);
   };
-  const updateImagesOrder = (images: string[]) => {
-    setImages(images);
+
+  const uploadLogo = (ev: IUploadImagesEvent) => {
+    uploadImagesOrAfisha(ev, setLogo, setIsUploadingLogo);
+  };
+  const handleRemoveImage = (link: string) => {
+    setImages((prevState) => prevState.filter((item) => link !== item));
+  };
+  const handleRemoveAfisha = (link: string) => {
+    setAfisha((prevState) => prevState.filter((item) => link !== item));
   };
   const handleAddNews = () => {
     dispatch(addNews());
@@ -141,6 +154,13 @@ function PlaceForm({
     newText: string,
   ) => {
     dispatch(updateNewsText({ index, newsItem, newText }));
+  };
+  const handleUpdateNewsDate = (
+    index: number,
+    newsItem: NewsList,
+    newDate: string,
+  ) => {
+    dispatch(updateNewsDate({ index, newsItem, newDate }));
   };
   const handleRemoveNews = (index: number) => {
     dispatch(removeNews({ index }));
@@ -259,66 +279,111 @@ function PlaceForm({
           </div>
           <div className="image-form flex gap-y-2 flex-col bg-nav-gray p-6 rounded-3xl">
             <label className="label-form">Фото</label>
-            <div className="mb-4 flex flex-wrap gap-2">
-              <ReactSortable
-                list={images.map((link, index) => ({
-                  id: index.toString(),
-                  link,
-                }))}
-                setList={(newState) =>
-                  updateImagesOrder(newState.map((item) => item.link))
-                }
-                className="flex flex-wrap gap-2"
-              >
-                {!!images?.length &&
-                  images.map((link) => (
-                    <div
-                      key={link}
-                      className="h-36 w-36 overflow-hidden flex items-center justify-center"
+            <div className="mb-4 flex flex-wrap gap-2 items-center justify-center">
+              {!!images?.length &&
+                images.map((link) => (
+                  <div
+                    key={link}
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center relative"
+                  >
+                    <button
+                      className="absolute top-1 right-1"
+                      type="button"
+                      onClick={() => handleRemoveImage(link)}
                     >
-                      <img src={link} className="w-auto h-full" />
-                    </div>
-                  ))}
-              </ReactSortable>
-              <div className="mt-4 border-2 border-gray-300 rounded-xl p-2 flex items-center w-full justify-between">
-                {isUplouding && (
-                  <div className="h-28 w-28 p-1 flex items-center">
-                    <Spinner />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="#ff6a6a"
+                        className="w-7 h-7"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                    <img src={link} className="w-auto h-full" />
                   </div>
-                )}
-                {!isUplouding && (
-                  <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-8 h-8"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                    <span>Добавить фото</span>
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={uploadImages}
+                ))}{' '}
+              {isUplouding && (
+                <div className="h-28 w-28 p-1 flex items-center">
+                  <Spinner />
+                </div>
+              )}
+              {!isUplouding && (
+                <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-8 h-8"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
                     />
-                  </label>
-                )}
-                <AirDatepickerReact
-                  className="form-input"
-                  type="text"
-                  placeholder="Выберите дату"
-                  id="dateImages"
-                  valueDate={dateImages}
-                  setDate={handleSetDate}
-                />
-              </div>
+                  </svg>
+                  <span>Добавить фото</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={uploadImages}
+                  />
+                </label>
+              )}
+            </div>
+            <label className="label-form">Дата фотоотчета</label>
+            <AirDatepickerReact
+              className="form-input"
+              type="text"
+              placeholder="Выберите дату"
+              id="dateImages"
+              valueDate={dateImages}
+              setDate={handleSetDate}
+            />
+            <label className="label-form">Логотип</label>
+            <div className="mb-4 flex flex-wrap gap-2 items-center justify-center">
+              {!!logo?.length &&
+                logo.map((link) => (
+                  <div
+                    key={link}
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center"
+                  >
+                    <img src={link} className="w-auto h-full" />
+                  </div>
+                ))}
+              {isUploadingLogo && (
+                <div className="h-28 w-28 p-1 flex items-center">
+                  <Spinner />
+                </div>
+              )}
+              {!isUploadingLogo && logo.length < 1 && (
+                <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-8 h-8"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                  <span>Добавить фото</span>
+                  <input type="file" className="hidden" onChange={uploadLogo} />
+                </label>
+              )}
             </div>
           </div>
 
@@ -374,6 +439,19 @@ function PlaceForm({
                       handleUpdateNewsText(index, newsItem, ev.target.value)
                     }
                   />
+                  <label className="label-form" htmlFor="newsText">
+                    Дата новости
+                  </label>
+                  <AirDatepickerReact
+                    className="form-input"
+                    type="text"
+                    placeholder="Выберите дату"
+                    id="dateImages"
+                    valueDate={newsItem.date}
+                    setDate={(newDate: any) =>
+                      handleUpdateNewsDate(index, newsItem, newDate)
+                    }
+                  />
                 </div>
               ))}
             <div className="bg-nav-gray p-6 rounded-3xl h-full">
@@ -389,13 +467,33 @@ function PlaceForm({
           <div className="afisha-form flex gap-y-2 flex-col bg-amber-100 ">
             <label className="text-2xl">Афиша</label>
             <div className="bg-nav-gray p-6 rounded-3xl relative">
-              <div className="mb-4 flex flex-wrap gap-2">
+              <div className="mb-4 flex flex-wrap gap-2 items-center justify-center">
                 {!!afisha?.length &&
                   afisha.map((link) => (
                     <div
                       key={link}
-                      className="h-36 w-36 overflow-hidden flex items-center justify-center"
+                      className="h-36 w-36 overflow-hidden flex items-center justify-center relative"
                     >
+                      <button
+                        className="absolute top-1 right-1"
+                        type="button"
+                        onClick={() => handleRemoveAfisha(link)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="#ff6a6a"
+                          className="w-7 h-7"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
                       <img src={link} className="w-auto h-full" />
                     </div>
                   ))}
@@ -405,28 +503,30 @@ function PlaceForm({
                     <Spinner />
                   </div>
                 )}
-                <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-8 h-8"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
+                {!isUplouding && (
+                  <label className="text-gray-300 h-28 w-28 border-2 border-gray-300 rounded-2xl flex flex-col justify-center items-center text-center text-sm cursor-pointer">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-8 h-8"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                    <span>Добавить фото</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      onChange={uploadAfisha}
                     />
-                  </svg>
-                  <span>Добавить фото</span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={uploadAfisha}
-                  />
-                </label>
+                  </label>
+                )}
               </div>
             </div>
           </div>

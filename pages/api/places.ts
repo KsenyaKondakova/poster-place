@@ -22,6 +22,7 @@ export default async function apiHandler(
         category,
         news,
         afisha,
+        logo,
         dateImages,
       } = req.body;
 
@@ -39,6 +40,7 @@ export default async function apiHandler(
         images,
         afisha,
         category,
+        logo,
         news: newsWithParent,
         dateImages: convertDatesToISO(dateImages),
       });
@@ -80,6 +82,7 @@ export default async function apiHandler(
         descriptionPlace,
         images,
         afisha,
+        logo,
         category,
         news,
         _id,
@@ -91,6 +94,7 @@ export default async function apiHandler(
           description: descriptionPlace,
           images,
           category,
+          logo,
           news,
           afisha,
           dateImages: convertDatesToISO(dateImages),
