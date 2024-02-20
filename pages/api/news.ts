@@ -1,5 +1,6 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { News } from '@/models/News';
+import { convertDatesToISO, convertISOToCustomFormat } from '@/utils/date';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -14,20 +15,23 @@ export default async function apiHandler(
     await mongooseConnect();
     await isAdminAuth(req, res);
     if (method === 'POST') {
-      const { newsName, newsText } = req.body;
-      const parentId = new mongoose.Types.ObjectId();
+      const { newsName, newsText, date } = req.body;
       const newsDoc = await News.create({
-        _id: parentId,
         newsName,
         newsText,
+        date: convertDatesToISO(date),
       });
       res.json(newsDoc);
     }
 
     if (method === 'GET') {
       if (req.query?.id) {
-        const newsInfo = await News.findOne({ _id: req.query.id });
-        if (newsInfo) {
+        const newsInfoGet = await News.findOne({ _id: req.query.id });
+        if (newsInfoGet) {
+          const newsInfo = {
+            ...newsInfoGet._doc,
+            date: convertISOToCustomFormat(newsInfoGet.date),
+          };
           res.json(newsInfo);
         } else {
           res.status(404).json({ error: 'Place not found' });
@@ -37,19 +41,22 @@ export default async function apiHandler(
         const totalItems = await News.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
         const sortQuery: any = { newsName: Number(sort) };
-        const news = await News.find()
+        const newsGet = await News.find()
           .sort(sortQuery)
           .skip(Number(offset))
           .limit(Number(limit));
-
+        const news = newsGet.map((item) => ({
+          ...item._doc,
+          date: convertISOToCustomFormat(item.date),
+        }));
         res.json({ news, totalPages });
       }
     }
     if (method === 'PUT') {
-      const { newsName, newsText, _id } = req.body;
+      const { newsName, newsText, date, _id } = req.body;
       const updatedNews = await News.findOneAndUpdate(
         { _id },
-        { newsName, newsText },
+        { newsName, newsText, date: convertDatesToISO(date) },
         { new: true },
       );
       if (updatedNews) {

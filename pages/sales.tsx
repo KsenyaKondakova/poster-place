@@ -173,6 +173,7 @@ function Sales() {
         limit={limit}
         setOffset={setOffset}
         setPage={setPage}
+        page={page}
       />
     </Layout>
   );

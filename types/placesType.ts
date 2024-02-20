@@ -6,7 +6,8 @@ export interface IPlaceList {
   category: string;
   news: NewsList[];
   afisha?: string[];
-  dateImages: string;
+  dateImages?: string;
+  logo?: string[];
 }
 
 export interface IPlaceState {
@@ -37,7 +38,7 @@ export interface NewsList {
   _id: number | string | null;
   newsName: string;
   newsText: string;
-  parent: number | string | null;
+  date: string;
 }
 export interface NewPlaceForm {
   placeName: string;
@@ -46,6 +47,7 @@ export interface NewPlaceForm {
   category: string;
   news: NewsList[];
   dateImages: string;
+  logo: string[];
 }
 export interface NewCategoryForm {
   categoryName: string;
