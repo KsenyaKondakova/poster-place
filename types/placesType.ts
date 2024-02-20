@@ -38,7 +38,6 @@ export interface NewsList {
   _id: number | string | null;
   newsName: string;
   newsText: string;
-  parent: number | string | null;
   date: string;
 }
 export interface NewPlaceForm {

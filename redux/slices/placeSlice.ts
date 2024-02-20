@@ -35,7 +35,6 @@ export const placeSlice = createSlice({
 
     addNews: (state) => {
       const newNewsId = new mongoose.Types.ObjectId();
-      const parentId = state.placeInfo._id;
 
       state.placeInfo.news = [
         ...state.placeInfo.news,
@@ -43,7 +42,6 @@ export const placeSlice = createSlice({
           _id: newNewsId.toString(),
           newsName: '',
           newsText: '',
-          parent: parentId,
           date: '',
         },
       ];

@@ -4,7 +4,29 @@ import { convertDatesToISO, convertISOToCustomFormat } from '@/utils/date';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import { NewsList } from '@/types/placesType';
+
 import { isAdminAuth } from './auth/[...nextauth]';
+
+const newsDateFormat = (items: NewsList[]) =>
+  items.map((item: NewsList) => {
+    return {
+      ...item,
+      date: convertDatesToISO(item.date),
+    };
+  });
+const newsDateFormatNormal = (items: NewsList[]) =>
+  items.map((item: any) => {
+    if (item.toObject) {
+      const itemData = item.toObject();
+      return {
+        ...itemData,
+        date: convertISOToCustomFormat(itemData.date),
+      };
+    } else {
+      return item;
+    }
+  });
 
 export default async function apiHandler(
   req: NextApiRequest,
@@ -26,22 +48,14 @@ export default async function apiHandler(
         dateImages,
       } = req.body;
 
-      const parentId = new mongoose.Types.ObjectId();
-
-      const newsWithParent = news.map((newsItem: any) => ({
-        ...newsItem,
-        parent: parentId,
-      }));
-
       const placeDoc = await Place.create({
-        _id: parentId,
         title: placeName,
         description: descriptionPlace,
         images,
         afisha,
         category,
         logo,
-        news: newsWithParent,
+        news: newsDateFormat(news),
         dateImages: convertDatesToISO(dateImages),
       });
       res.json(placeDoc);
@@ -50,10 +64,12 @@ export default async function apiHandler(
     if (method === 'GET') {
       if (req.query?.id) {
         const placeGet = await Place.findOne({ _id: req.query.id });
+
         if (placeGet) {
           const place = {
             ...placeGet._doc,
             dateImages: convertISOToCustomFormat(placeGet.dateImages),
+            news: newsDateFormatNormal(placeGet.news),
           };
           res.json(place);
         } else {
@@ -87,6 +103,7 @@ export default async function apiHandler(
         news,
         _id,
       } = req.body;
+
       const updatedPlace = await Place.findOneAndUpdate(
         { _id },
         {
@@ -95,7 +112,7 @@ export default async function apiHandler(
           images,
           category,
           logo,
-          news,
+          news: newsDateFormat(news),
           afisha,
           dateImages: convertDatesToISO(dateImages),
         },
