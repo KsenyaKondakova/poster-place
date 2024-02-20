@@ -35,6 +35,7 @@ function News() {
         dispatch(setPageQty(response.data.totalPages));
       });
   }, [page, sortType]);
+  console.log(news);
   return (
     <Layout>
       <div className="flex items-center gap-x-4">
@@ -94,6 +95,7 @@ function News() {
         limit={limit}
         setOffset={setOffset}
         setPage={setPage}
+        page={page}
       />
     </Layout>
   );

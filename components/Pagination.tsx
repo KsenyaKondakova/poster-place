@@ -1,29 +1,29 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import ResponsivePagination from 'react-responsive-pagination';
+
+import 'react-responsive-pagination/themes/classic.css';
 
 import LeftArrow from '@/assets/icons/LeftArrow';
 import RightArrow from '@/assets/icons/RightArrow';
 
-function PaginationComp({ pageQty, limit, setOffset, setPage }: any) {
+import { RootState } from '@/redux/store';
+
+function PaginationComp({ pageQty, limit, setOffset, setPage, page }: any) {
   const dispatch = useDispatch();
-  const handlePageClick = (event: any) => {
-    dispatch(setOffset(event.selected * limit));
-    dispatch(setPage(event.selected));
+  const handlePageClick = (event: number) => {
+    dispatch(setOffset((event - 1) * limit));
+    dispatch(setPage(event - 1));
   };
 
   return (
-    <ReactPaginate
-      breakLabel="..."
-      nextLabel={<RightArrow />}
+    <ResponsivePagination
+      current={page + 1}
+      total={pageQty}
       onPageChange={handlePageClick}
-      pageRangeDisplayed={5}
-      pageCount={pageQty}
       previousLabel={<LeftArrow />}
-      renderOnZeroPageCount={null}
-      containerClassName="flex fixed bottom-10 left-1/2 gap-x-2"
-      pageLinkClassName="p-2 px-4 border-2 border-black rounded-lg"
-      activeLinkClassName="bg-[#f5a54a]"
+      nextLabel={<RightArrow />}
     />
   );
 }
