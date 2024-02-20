@@ -8,29 +8,40 @@ import { setNewsInfo } from '@/redux/slices/newsSlice';
 
 import { NewNewsForm, NewsList } from '@/types/placesType';
 
+import AirDatepickerReact from './DatePicker';
+
 function NewsForm({
   _id,
   newsName: existingNewsName,
   newsText: existingNewsText,
+  date: existingDate,
 }: NewsList) {
   const dispatch = useDispatch();
   const router: NextRouter = useRouter();
   const [goToNews, setGoToNews] = useState<boolean>(false);
+  const [date, setDate] = useState<string>(existingDate || '');
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<NewNewsForm>();
-
+  const handleSetDate = (date: string) => {
+    setDate(date);
+  };
   const onSubmit = async (data: NewNewsForm) => {
     if (_id) {
-      await axios.put('/api/news', { ...data, _id });
+      await axios.put('/api/news', { ...data, date, _id });
     } else {
-      await axios.post('/api/news', { ...data });
+      await axios.post('/api/news', { ...data, date });
     }
     setGoToNews(true);
     dispatch(
-      setNewsInfo({ _id: null, newsName: '', newsText: '', parent: null }),
+      setNewsInfo({
+        _id: null,
+        newsName: '',
+        newsText: '',
+        date: '',
+      }),
     );
   };
   if (goToNews) {
@@ -97,6 +108,17 @@ function NewsForm({
             <p>Это поле должно быть заполнено</p>
           </div>
         )}
+        <label className="label-form" htmlFor="newsText">
+          Дата новости
+        </label>
+        <AirDatepickerReact
+          className="form-input"
+          type="text"
+          placeholder="Выберите дату"
+          id="dateImages"
+          valueDate={date}
+          setDate={handleSetDate}
+        />
       </div>
       <div className="button-form flex justify-center items-center">
         <input className="submit-btn" type="submit" value="Отправить" />

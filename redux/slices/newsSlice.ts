@@ -1,9 +1,11 @@
-import { INewsState, NewsList } from '@/types/placesType';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+
+import { INewsState, NewsList } from '@/types/placesType';
+
 const initialState: INewsState = {
   newsList: [],
-  newsInfo: { _id: null, newsName: '', newsText: '', parent: null },
+  newsInfo: { _id: null, newsName: '', newsText: '', date: '' },
   limit: 12,
   offset: 0,
   page: 0,
@@ -38,6 +40,13 @@ export const newsSlice = createSlice({
   },
 });
 
-export const { setNews, setNewsInfo, setLimit, setOffset, setPage, setPageQty, setSortType } =
-  newsSlice.actions;
+export const {
+  setNews,
+  setNewsInfo,
+  setLimit,
+  setOffset,
+  setPage,
+  setPageQty,
+  setSortType,
+} = newsSlice.actions;
 export default newsSlice.reducer;
