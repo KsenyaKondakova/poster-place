@@ -389,8 +389,8 @@ function PlaceForm({
 
           <div className="news-form flex gap-y-2 flex-col bg-amber-100 h-full ">
             <label className="text-2xl">Новости</label>
-            {placeInfo.news.length > 0 &&
-              placeInfo.news.map((newsItem, index) => (
+            {existingNews.length > 0 &&
+              existingNews.map((newsItem, index) => (
                 <div
                   key={index}
                   className="bg-nav-gray p-6 rounded-3xl relative "
