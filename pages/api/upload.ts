@@ -59,7 +59,7 @@ export default async function handle(req: any, res: any) {
           }),
         );
 
-        const objectUrl = `https://${bucketName}.hb.vkcs.cloud/${newFileName}`;
+        const objectUrl = `https://${bucketName}.hb.ru-msk.vkcs.cloud/${newFileName}`;
         links.push(objectUrl);
       } catch (error) {
         console.error('Error uploading file to S3:', error);
