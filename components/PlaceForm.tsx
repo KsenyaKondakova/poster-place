@@ -448,7 +448,7 @@ function PlaceForm({
                       className="form-input"
                       type="text"
                       placeholder="Выберите дату"
-                      id="dateImages"
+                      id={index}
                       valueDate={newsItem.date}
                       setDate={(newDate: any) =>
                         handleUpdateNewsDate(index, newsItem, newDate)
