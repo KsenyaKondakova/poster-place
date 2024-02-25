@@ -390,70 +390,73 @@ function PlaceForm({
           <div className="news-form flex gap-y-2 flex-col bg-amber-100 h-full ">
             <label className="text-2xl">Новости</label>
             {existingNews.length > 0 &&
-              existingNews.map((newsItem, index) => (
-                <div
-                  key={index}
-                  className="bg-nav-gray p-6 rounded-3xl relative "
-                >
-                  <button
-                    className="absolute top-3 right-4"
-                    type="button"
-                    onClick={() => handleRemoveNews(index)}
+              existingNews.map((newsItem, index) => {
+                console.log(newsItem.date);
+                return (
+                  <div
+                    key={index}
+                    className="bg-nav-gray p-6 rounded-3xl relative "
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="#ff6a6a"
-                      className="w-7 h-7"
+                    <button
+                      className="absolute top-3 right-4"
+                      type="button"
+                      onClick={() => handleRemoveNews(index)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                  <label className="label-form" htmlFor="newsName">
-                    Название новости
-                  </label>
-                  <input
-                    className="form-input"
-                    id="newsName"
-                    value={newsItem.newsName}
-                    onChange={(ev) =>
-                      handleUpdateNewsName(index, newsItem, ev.target.value)
-                    }
-                  />
-                  <label className="label-form" htmlFor="newsText">
-                    Текст новости
-                  </label>
-                  <textarea
-                    className="form-input"
-                    cols={10}
-                    rows={8}
-                    id="newsText"
-                    value={newsItem.newsText}
-                    onChange={(ev) =>
-                      handleUpdateNewsText(index, newsItem, ev.target.value)
-                    }
-                  />
-                  <label className="label-form" htmlFor="newsText">
-                    Дата новости
-                  </label>
-                  <AirDatepickerReact
-                    className="form-input"
-                    type="text"
-                    placeholder="Выберите дату"
-                    id="dateImages"
-                    valueDate={newsItem.date}
-                    setDate={(newDate: any) =>
-                      handleUpdateNewsDate(index, newsItem, newDate)
-                    }
-                  />
-                </div>
-              ))}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="#ff6a6a"
+                        className="w-7 h-7"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                    <label className="label-form" htmlFor="newsName">
+                      Название новости
+                    </label>
+                    <input
+                      className="form-input"
+                      id="newsName"
+                      value={newsItem.newsName}
+                      onChange={(ev) =>
+                        handleUpdateNewsName(index, newsItem, ev.target.value)
+                      }
+                    />
+                    <label className="label-form" htmlFor="newsText">
+                      Текст новости
+                    </label>
+                    <textarea
+                      className="form-input"
+                      cols={10}
+                      rows={8}
+                      id="newsText"
+                      value={newsItem.newsText}
+                      onChange={(ev) =>
+                        handleUpdateNewsText(index, newsItem, ev.target.value)
+                      }
+                    />
+                    <label className="label-form" htmlFor="newsText">
+                      Дата новости
+                    </label>
+                    <AirDatepickerReact
+                      className="form-input"
+                      type="text"
+                      placeholder="Выберите дату"
+                      id="dateImages"
+                      valueDate={newsItem.date}
+                      setDate={(newDate: any) =>
+                        handleUpdateNewsDate(index, newsItem, newDate)
+                      }
+                    />
+                  </div>
+                );
+              })}
             <div className="bg-nav-gray p-6 rounded-3xl h-full">
               <button
                 className="edit__buttons"
