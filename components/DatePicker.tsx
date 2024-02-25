@@ -27,7 +27,9 @@ const AirDatepickerReact = forwardRef((props: any) => {
   useEffect(() => {
     dp.current.update();
   }, []);
-
+  useEffect(() => {
+    dp.current.update();
+  }, [props.valueDate]);
   return (
     <input
       autoComplete="off"
