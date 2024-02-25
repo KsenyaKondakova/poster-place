@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { NextRouter, useRouter } from 'next/router';
 import { ChangeEvent, use, useEffect, useState } from 'react';
+import ReactDatePicker from 'react-datepicker';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,6 +20,8 @@ import { IPlaceList, NewPlaceForm, NewsList } from '@/types/placesType';
 
 import AirDatepickerReact from './DatePicker';
 import Spinner from './Spinner';
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
@@ -444,13 +447,10 @@ function PlaceForm({
                     <label className="label-form" htmlFor="newsText">
                       Дата новости
                     </label>
-                    <AirDatepickerReact
-                      className="form-input"
-                      type="text"
-                      placeholder="Выберите дату"
-                      id={index}
-                      valueDate={newsItem.date}
-                      setDate={(newDate: any) =>
+
+                    <ReactDatePicker
+                      selected={new Date(newsItem.date)}
+                      onChange={(newDate: any) =>
                         handleUpdateNewsDate(index, newsItem, newDate)
                       }
                     />
