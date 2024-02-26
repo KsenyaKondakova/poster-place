@@ -165,7 +165,11 @@ function PlaceForm({
     newsItem: NewsList,
     newDate: string,
   ) => {
-    const formattedDate = format(newDate, 'dd.MM.yyyy');
+    console.log(newDate);
+    const pickDate = new Date(newDate);
+    console.log(pickDate);
+    const formattedDate = format(pickDate, 'dd.MM.yyyy');
+    console.log(formattedDate);
     dispatch(updateNewsDate({ index, newsItem, newDate: formattedDate }));
   };
   const handleRemoveNews = (index: number) => {
@@ -395,8 +399,8 @@ function PlaceForm({
 
           <div className="news-form flex gap-y-2 flex-col bg-amber-100 h-full ">
             <label className="text-2xl">Новости</label>
-            {existingNews.length > 0 &&
-              existingNews.map((newsItem, index) => {
+            {placeInfo.news.length > 0 &&
+              placeInfo.news.map((newsItem, index) => {
                 return (
                   <div
                     key={index}
@@ -452,7 +456,11 @@ function PlaceForm({
 
                     <ReactDatePicker
                       dateFormat="dd.MM.yyyy"
-                      selected={new Date(newsItem.date)}
+                      selected={
+                        new Date(
+                          `${newsItem.date.substring(6, 10)}-${newsItem.date.substring(3, 5)}-${newsItem.date.substring(0, 2)}`,
+                        )
+                      }
                       onChange={(newDate: any) =>
                         handleUpdateNewsDate(index, newsItem, newDate)
                       }

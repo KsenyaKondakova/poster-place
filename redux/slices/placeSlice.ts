@@ -42,7 +42,7 @@ export const placeSlice = createSlice({
           _id: newNewsId.toString(),
           newsName: '',
           newsText: '',
-          date: '',
+          date: '01.01.2024',
         },
       ];
     },
