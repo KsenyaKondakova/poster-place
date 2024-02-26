@@ -23,6 +23,8 @@ import Spinner from './Spinner';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
+import { format } from 'date-fns';
+
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
   target: HTMLInputElement & EventTarget;
 }
@@ -163,7 +165,8 @@ function PlaceForm({
     newsItem: NewsList,
     newDate: string,
   ) => {
-    dispatch(updateNewsDate({ index, newsItem, newDate }));
+    const formattedDate = format(newDate, 'dd.MM.yyyy');
+    dispatch(updateNewsDate({ index, newsItem, newDate: formattedDate }));
   };
   const handleRemoveNews = (index: number) => {
     dispatch(removeNews({ index }));
@@ -394,7 +397,6 @@ function PlaceForm({
             <label className="text-2xl">Новости</label>
             {existingNews.length > 0 &&
               existingNews.map((newsItem, index) => {
-                console.log(newsItem.date);
                 return (
                   <div
                     key={index}
@@ -449,6 +451,7 @@ function PlaceForm({
                     </label>
 
                     <ReactDatePicker
+                      dateFormat="dd.MM.yyyy"
                       selected={new Date(newsItem.date)}
                       onChange={(newDate: any) =>
                         handleUpdateNewsDate(index, newsItem, newDate)
