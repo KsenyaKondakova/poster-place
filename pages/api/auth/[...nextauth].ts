@@ -1,7 +1,7 @@
 import NextAuth, { getServerSession } from 'next-auth';
 import YandexProvider from 'next-auth/providers/yandex';
 
-const adminEmails = ['ilisichckin@yandex.ru'];
+const adminEmails = ['ilisichckin@yandex.ru', 'secular@butic64.ru'];
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [

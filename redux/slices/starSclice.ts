@@ -1,6 +1,7 @@
-import { IStarState, StarList } from '@/types/placesType';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+
+import { IStarState, StarList } from '@/types/placesType';
 
 const initialState: IStarState = {
   starList: [],
@@ -11,6 +12,7 @@ const initialState: IStarState = {
     description: '',
     subdescription: '',
     images: [],
+    orderStar: '',
   },
   limit: 12,
   offset: 0,
@@ -43,7 +45,13 @@ export const starSlice = createSlice({
   },
 });
 
-export const { setStars, setStarInfo, setLimit, setOffset, setPage, setPageQty } =
-  starSlice.actions;
+export const {
+  setStars,
+  setStarInfo,
+  setLimit,
+  setOffset,
+  setPage,
+  setPageQty,
+} = starSlice.actions;
 
 export default starSlice.reducer;

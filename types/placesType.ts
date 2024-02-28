@@ -88,6 +88,7 @@ export interface StarList {
   description: string;
   subdescription: string;
   images?: string[];
+  orderStar: string;
 }
 export interface IStarState {
   starList: StarList[];

@@ -14,8 +14,14 @@ export default async function apiHandler(
     await mongooseConnect();
     await isAdminAuth(req, res);
     if (method === 'POST') {
-      const { name, secondName, description, subdescription, images } =
-        req.body;
+      const {
+        name,
+        secondName,
+        description,
+        subdescription,
+        images,
+        orderStar,
+      } = req.body;
       const parentId = new mongoose.Types.ObjectId();
 
       const starDoc = await Star.create({
@@ -25,6 +31,7 @@ export default async function apiHandler(
         description,
         subdescription,
         images,
+        orderStar,
       });
       res.json(starDoc);
     }
@@ -51,11 +58,18 @@ export default async function apiHandler(
     }
 
     if (method === 'PUT') {
-      const { name, secondName, description, subdescription, images, _id } =
-        req.body;
+      const {
+        name,
+        secondName,
+        description,
+        subdescription,
+        images,
+        _id,
+        orderStar,
+      } = req.body;
       const updatedStar = await Star.findOneAndUpdate(
         { _id },
-        { name, secondName, description, subdescription, images },
+        { name, secondName, description, subdescription, images, orderStar },
         { new: true },
       );
 
