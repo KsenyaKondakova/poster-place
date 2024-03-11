@@ -140,6 +140,9 @@ function PlaceForm({
   const handleRemoveImage = (link: string) => {
     setImages((prevState) => prevState.filter((item) => link !== item));
   };
+  const handleRemoveLogo = (link: string) => {
+    setLogo((prevState) => prevState.filter((item) => link !== item));
+  };
   const handleRemoveAfisha = (link: string) => {
     setAfisha((prevState) => prevState.filter((item) => link !== item));
   };
@@ -364,8 +367,28 @@ function PlaceForm({
                 logo.map((link) => (
                   <div
                     key={link}
-                    className="h-36 w-36 overflow-hidden flex items-center justify-center"
+                    className="h-36 w-36 overflow-hidden flex items-center justify-center relative"
                   >
+                    <button
+                      className="absolute top-1 right-1"
+                      type="button"
+                      onClick={() => handleRemoveLogo(link)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="#ff6a6a"
+                        className="w-7 h-7"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
                     <img src={link} className="w-auto h-full" />
                   </div>
                 ))}
