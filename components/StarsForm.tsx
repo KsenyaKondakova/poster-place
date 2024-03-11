@@ -258,7 +258,7 @@ function StarsForm({
             </label>
             <textarea
               className="form-input"
-              {...register('subdescription', { required: true })}
+              {...register('subdescription')}
               defaultValue={existingSubdescription || ''}
               id="subdescription"
               cols={10}
