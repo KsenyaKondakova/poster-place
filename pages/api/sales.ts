@@ -23,18 +23,23 @@ export default async function apiHandler(
     }
     if (method === 'GET') {
       const { limit, offset } = req.query;
-      const totalItems = await Sale.countDocuments();
-      const totalPages = Math.ceil(totalItems / Number(limit));
-      const sales = await Sale.find()
-        .sort({ date: 1 })
-        .skip(Number(offset))
-        .limit(Number(limit));
-      const formatSale = sales.map((sale) => ({
-        ...sale._doc,
-        date: convertISOToCustomFormat(sale.date),
-      }));
+      if (limit) {
+        const totalItems = await Sale.countDocuments();
+        const totalPages = Math.ceil(totalItems / Number(limit));
+        const sales = await Sale.find()
+          .sort({ date: 1 })
+          .skip(Number(offset))
+          .limit(Number(limit));
+        const formatSale = sales.map((sale) => ({
+          ...sale._doc,
+          date: convertISOToCustomFormat(sale.date),
+        }));
 
-      res.json({ formatSale, totalPages });
+        res.json({ formatSale, totalPages });
+      } else {
+        const sales = await Sale.find();
+        res.json(sales);
+      }
     }
     if (method === 'PUT') {
       const { date, amount, _id } = req.body;
