@@ -348,6 +348,7 @@ function PlaceForm({
                     type="file"
                     className="hidden"
                     onChange={uploadImages}
+                    multiple
                   />
                 </label>
               )}

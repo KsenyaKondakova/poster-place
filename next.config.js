@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'place-images.hb.vkcs.cloud',
       },
+      {
+        protocol: 'https',
+        hostname: 'place-images.hb.ru-msk.vkcs.cloud',
+      },
     ],
   },
 };

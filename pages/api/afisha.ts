@@ -1,5 +1,6 @@
 import { mongooseConnect } from '@/lib/mongoose';
 import { Afisha } from '@/models/Afisha';
+import { convertDatesToISO, convertISOToCustomFormat } from '@/utils/date';
 import mongoose from 'mongoose';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -14,19 +15,25 @@ export default async function apiHandler(
     await mongooseConnect();
     await isAdminAuth(req, res);
     if (method === 'POST') {
-      const { afishaInfo } = req.body;
+      const { afishaInfo, dateImages } = req.body;
+
       const parentId = new mongoose.Types.ObjectId();
       const newsDoc = await Afisha.create({
         _id: parentId,
         image: afishaInfo.image,
+        dateImages: convertDatesToISO(dateImages),
       });
       res.json(newsDoc);
     }
 
     if (method === 'GET') {
       if (req.query?.id) {
-        const afishaInfo = await Afisha.findOne({ _id: req.query.id });
-        if (afishaInfo) {
+        const afishaInfoGet = await Afisha.findOne({ _id: req.query.id });
+        if (afishaInfoGet) {
+          const afishaInfo = {
+            ...afishaInfoGet._doc,
+            dateImages: convertISOToCustomFormat(afishaInfoGet.dateImages),
+          };
           res.json(afishaInfo);
         } else {
           res.status(404).json({ error: 'Place not found' });
@@ -35,10 +42,13 @@ export default async function apiHandler(
         const { limit, offset } = req.query;
         const totalItems = await Afisha.countDocuments();
         const totalPages = Math.ceil(totalItems / Number(limit));
-        const afishas = await Afisha.find()
+        const afishasGet = await Afisha.find()
           .skip(Number(offset))
           .limit(Number(limit));
-
+        const afishas = afishasGet.map((afisha) => ({
+          ...afisha._doc,
+          dateImages: convertISOToCustomFormat(afisha.dateImages),
+        }));
         res.json({ afishas, totalPages });
       }
     }

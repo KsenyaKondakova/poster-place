@@ -10,6 +10,7 @@ import { RootState } from '@/redux/store';
 
 import { AfishaList, NewAfishaForm } from '@/types/placesType';
 
+import AirDatepickerReact from './DatePicker';
 import Spinner from './Spinner';
 
 interface IUploadImagesEvent extends ChangeEvent<HTMLInputElement> {
@@ -23,6 +24,7 @@ function AfishaForm({ _id }: AfishaList) {
   const router: NextRouter = useRouter();
   const [goToAfisha, setGoToAfisha] = useState<boolean>(false);
   const [isUplouding, setIsUploading] = useState<boolean>(false);
+  const [dateImages, setDateImages] = useState<string>('');
   const {
     register,
     handleSubmit,
@@ -47,31 +49,34 @@ function AfishaForm({ _id }: AfishaList) {
   const uploadImages = (ev: IUploadImagesEvent) => {
     uploadImagesOrAfisha(ev, setIsUploading);
   };
+  const handleSetDate = (date: string) => {
+    setDateImages(date);
+  };
   const onSubmit = async () => {
     if (_id) {
-      await axios.put('/api/afisha', { afishaInfo, _id });
+      await axios.put('/api/afisha', { afishaInfo, _id, dateImages });
     } else {
-      await axios.post('/api/afisha', { afishaInfo });
+      await axios.post('/api/afisha', { afishaInfo, dateImages });
     }
     setGoToAfisha(true);
-    dispatch(setAfishaInfo({ _id: null, image: '' }));
+    dispatch(setAfishaInfo({ _id: null, image: '', dateImages: '' }));
   };
   if (goToAfisha) {
     router.push('/afisha');
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
-      <div className="flex flex-col bg-nav-gray p-6 rounded-3xl">
-        <div className="mb-4 flex flex-col gap-2 justify-center items-center">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 ">
+      <div className="flex flex-col bg-nav-gray p-6 rounded-3xl h-full">
+        <div className="mb-4 flex flex-col gap-2 justify-center items-center h-full">
           {afishaInfo.image && (
-            <div className=" overflow-hidden flex items-center justify-center">
+            <div className=" overflow-hidden flex items-center justify-center max-h-80">
               <Image
-                width={600}
-                height={600}
                 src={afishaInfo.image}
-                className="w-auto h-full"
-                alt="afisha"
+                alt="photo"
+                width={320}
+                height={200}
+                objectFit="cover"
               />
             </div>
           )}
@@ -124,6 +129,17 @@ function AfishaForm({ _id }: AfishaList) {
               <p>Это поле должно быть заполнено</p>
             </div>
           )}
+        </div>
+        <div>
+          <label className="label-form">Дата афиши</label>
+          <AirDatepickerReact
+            className="form-input"
+            type="text"
+            placeholder="Выберите дату"
+            id="dateImages"
+            valueDate={dateImages}
+            setDate={handleSetDate}
+          />
         </div>
       </div>
       <div className="button-form flex justify-center items-center">

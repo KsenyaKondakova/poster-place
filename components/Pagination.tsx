@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactPaginate from 'react-paginate';
-import { useDispatch, useSelector } from 'react-redux';
 import ResponsivePagination from 'react-responsive-pagination';
 
 import 'react-responsive-pagination/themes/classic.css';
@@ -8,13 +6,18 @@ import 'react-responsive-pagination/themes/classic.css';
 import LeftArrow from '@/assets/icons/LeftArrow';
 import RightArrow from '@/assets/icons/RightArrow';
 
-import { RootState } from '@/redux/store';
+import { paginationCompProps } from '@/types/componentsType';
 
-function PaginationComp({ pageQty, limit, setOffset, setPage, page }: any) {
-  const dispatch = useDispatch();
+const PaginationComp: React.FC<paginationCompProps> = ({
+  pageQty,
+  limit,
+  setOffset,
+  setPage,
+  page,
+}) => {
   const handlePageClick = (event: number) => {
-    dispatch(setOffset((event - 1) * limit));
-    dispatch(setPage(event - 1));
+    setOffset((event - 1) * limit);
+    setPage(event - 1);
   };
 
   return (
@@ -26,6 +29,6 @@ function PaginationComp({ pageQty, limit, setOffset, setPage, page }: any) {
       nextLabel={<RightArrow />}
     />
   );
-}
+};
 
 export default PaginationComp;

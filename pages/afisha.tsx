@@ -1,75 +1,47 @@
-import axios from 'axios';
+import {
+  useAfishaData,
+  useAfishaLimit,
+  useAfishaOffset,
+  useAfishaPage,
+  useAfishaPageQty,
+} from '@/hooks/useReduxSelectors';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import TrashIcon from '@/assets/icons/TrashIcon';
-
+import { AfishaItem } from '@/components/AfishaItem';
 import Layout from '@/components/Layout';
 import PaginationComp from '@/components/Pagination';
 
-import {
-  setAfisha,
-  setOffset,
-  setPage,
-  setPageQty,
-} from '@/redux/slices/afishaSlice';
-import { RootState } from '@/redux/store';
+import { setOffset, setPage } from '@/redux/slices/afishaSlice';
+
+import { useAfishaDataFetch } from '../hooks/useDataFetching';
 
 function Afisha() {
   const dispatch = useDispatch();
-  const afisha = useSelector(
-    (state: RootState) => state.afishaSlice.afishaList,
-  );
-  const limit = useSelector((state: RootState) => state.afishaSlice.limit);
-  const offset = useSelector((state: RootState) => state.afishaSlice.offset);
-  const page = useSelector((state: RootState) => state.afishaSlice.page);
-  const pageQty = useSelector((state: RootState) => state.afishaSlice.pageQty);
-  useEffect(() => {
-    axios
-      .get(`/api/afisha?limit=${limit}&offset=${offset}`)
-      .then((response) => {
-        dispatch(setAfisha(response.data.afishas));
-        dispatch(setPageQty(response.data.totalPages));
-      });
-  }, [page]);
+  const afisha = useAfishaData();
+  const limit = useAfishaLimit();
+  const offset = useAfishaOffset();
+  const page = useAfishaPage();
+  const pageQty = useAfishaPageQty();
+
+  useAfishaDataFetch(limit, offset, page);
   return (
     <Layout>
       <Link href={'/afisha/new'} className="submit-btn">
         Добавить афишу
       </Link>
       <div className=" flex justify-center">
-        <div className="flex w-full mt-4 flex-wrap gap-3 justify-center lg:justify-start">
+        <div className="flex w-full mt-4 flex-wrap gap-3 justify-center lg:justify-start mb-2">
           {afisha.map((afishaItem) => (
-            <article
-              key={afishaItem._id}
-              className="flex flex-col basis-1/6 bg-nav-gray p-4 items-center rounded-lg justify-between gap-y-4"
-            >
-              <div
-                key={afishaItem.image}
-                className="overflow-hidden w-28 h-28 lg:w-32 lg:h-32 flex items-center justify-center"
-              >
-                <img src={afishaItem.image} className=" h-auto w-full" />
-              </div>
-
-              <div className="flex items-center ">
-                <Link
-                  className="edit__buttons"
-                  href={'/afisha/delete/' + afishaItem._id}
-                >
-                  <TrashIcon />
-                  <span className="hidden sm:block">Удалить</span>
-                </Link>
-              </div>
-            </article>
+            <AfishaItem key={afishaItem._id} afishaItem={afishaItem} />
           ))}
         </div>
       </div>
       <PaginationComp
         pageQty={pageQty}
         limit={limit}
-        setOffset={setOffset}
-        setPage={setPage}
+        setOffset={(offset: number) => dispatch(setOffset(offset))}
+        setPage={(page: number) => dispatch(setPage(page))}
         page={page}
       />
     </Layout>
