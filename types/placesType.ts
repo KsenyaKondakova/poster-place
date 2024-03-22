@@ -69,6 +69,7 @@ export interface NewNewsForm {
 export interface AfishaList {
   _id: number | string | null;
   image: string;
+  dateImages: string;
 }
 export interface IAfishaState {
   afishaList: AfishaList[];
@@ -117,4 +118,13 @@ export interface ISaleState {
 export interface NewSaleForm {
   amountForm: number;
   dateForm: string;
+}
+export interface quartalChartProps {
+  sales: ISaleList[];
+}
+export interface statIncomeProps {
+  sales: ISaleList[];
+  incomeFunc: (sales: ISaleList[], monthOffset: number) => number;
+  title: string;
+  monthOffset: number;
 }

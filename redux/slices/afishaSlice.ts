@@ -1,11 +1,14 @@
-import { IAfishaState } from '@/types/placesType';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+
+import { IAfishaState } from '@/types/placesType';
+
 import { AfishaList } from '../../types/placesType';
+
 const initialState: IAfishaState = {
   afishaList: [],
-  afishaInfo: { _id: null, image: '' },
-  limit: 20,
+  afishaInfo: { _id: null, image: '', dateImages: '' },
+  limit: 6,
   offset: 0,
   page: 0,
   pageQty: 0,
