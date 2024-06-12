@@ -93,8 +93,8 @@ function News() {
       <PaginationComp
         pageQty={pageQty}
         limit={limit}
-        setOffset={setOffset}
-        setPage={setPage}
+        setOffset={(offset: number) => dispatch(setOffset(offset))}
+        setPage={(page: number) => dispatch(setPage(page))}
         page={page}
       />
     </Layout>
