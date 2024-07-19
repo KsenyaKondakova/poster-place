@@ -15,15 +15,21 @@ import { RootState } from '@/redux/store';
 import { QuartalChart } from '../components/quartalChart';
 
 function Home() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const dispatch = useDispatch();
   const sales = useSelector((state: RootState) => state.saleSlice.saleList);
 
   useEffect(() => {
-    axios.get('/api/sales/').then((response) => {
-      dispatch(setSales(response.data));
-    });
-  }, []);
+    if (status === 'authenticated' && session) {
+      axios.get('/api/sales/').then((response) => {
+        dispatch(setSales(response.data));
+      });
+    }
+  }, [status, session, dispatch]);
+
+  if (status === 'loading') {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Layout>
